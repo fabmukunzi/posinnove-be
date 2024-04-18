@@ -8,7 +8,7 @@ dotenv.config
 
   try {
     await databaseConnection.authenticate();
-    console.log('Connection has been established successfully.',process.env.DEV_DATABASE_URL);
+    console.log('Connection has been established successfully.');
     return databaseConnection;
   } catch (err) {
     console.error('Unable to connect to the database:', err);

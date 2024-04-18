@@ -1,17 +1,19 @@
-import { userSignup,userLogin,getAllUsers,singleUser } from "../controllers/user.controller";
-import express from "express";
-import validateUser from "../validations/user.validation"
+import {
+  userSignup,
+  userLogin,
+  getAllUsers,
+  singleUser,
+} from '../controllers/user.controller';
+import express from 'express';
+import validateUser from '../validations/user.validation';
+import { protectRoute, restrictTo } from '../middlewares/auth.middleware';
+import checkUserExistenceByEmail, { CheckLoginPassword, checkIfUserExistById } from '../middlewares/user.middleware';
+
 const userRoutes = express.Router();
 
-//middlewares
-import checkUserExistence from "../middlewares/isExistingUser";
-
-
-
-userRoutes.post("/signup",checkUserExistence,validateUser, userSignup);
-userRoutes.post("/login", userLogin);
-userRoutes.get("/",getAllUsers);
-userRoutes.get("/:id",singleUser);
+userRoutes.post('/signup',validateUser, checkUserExistenceByEmail,  userSignup);
+userRoutes.post('/login', checkUserExistenceByEmail,CheckLoginPassword, userLogin);
+userRoutes.get('/', protectRoute, restrictTo('admin','teacher'), getAllUsers);
+userRoutes.get('/:id',checkIfUserExistById, singleUser);
 
 export default userRoutes;
-
