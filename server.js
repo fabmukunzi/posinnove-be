@@ -1,9 +1,18 @@
+import app from './app.js';
+import connectToDatabase from './src/database/config/database.config.js';
 import dotenv from 'dotenv';
-import app, { connectDb } from './src/app';
+
 dotenv.config();
-(async () => {
-  await connectDb();
-  app.listen(process.env.PORT || 3000, () => {
-    console.log(`server is running on port ${process.env.PORT}!`);
+
+const PORT = process.env.PORT || 3000;
+connectToDatabase()
+  .then(() => {
+    console.log('Connected to the database');
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to connect to the database:', err);
+    process.exit(1);
   });
-})();
