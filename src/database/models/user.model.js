@@ -1,6 +1,8 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import Sequelize, { DataTypes } from 'sequelize';
+import { hashPassword } from "../utils/password.utils";
+
 import dotenv from 'dotenv';
-dotenv.config(); 
+dotenv.config();
 
 const sequelize = new Sequelize(process.env.DEV_DATABASE_URL, {
   dialect: 'postgres',
@@ -45,6 +47,14 @@ const User = sequelize.define('User', {
     type:DataTypes.STRING,
     defaultValue: 'student',   
   },
+  resetPasswordToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  resetPasswordTokenExpires: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: Sequelize.NOW,
@@ -56,6 +66,13 @@ const User = sequelize.define('User', {
 }, {
   timestamps: true,
   tableName: 'users',
+});
+
+User.beforeCreate(async (user) => {
+  if (user.changed('password')) {
+    const hashedPassword = await hashPassword(user.password);
+    user.password = hashedPassword;
+  }
 });
 
 export default User;
