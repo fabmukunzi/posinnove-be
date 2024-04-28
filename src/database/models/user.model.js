@@ -53,6 +53,10 @@ const User = sequelize.define('User', {
     type: DataTypes.DATE,
     defaultValue: Sequelize.NOW,
   },
+  active:{
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+  }
 }, {
   timestamps: true,
   tableName: 'users',
