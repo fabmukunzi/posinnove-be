@@ -21,3 +21,4 @@ export async function sendEmail({ to, subject, body }) {
 
   return info;
 }
+export default  sendEmail
