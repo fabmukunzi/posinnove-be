@@ -15,8 +15,8 @@ const userRoutes = express.Router();
 
 userRoutes.post('/signup',validateUser, checkUserExistenceByEmail,  userSignup);
 userRoutes.post('/login', checkUserExistenceByEmail,CheckLoginPassword,isUserActive, userLogin);
-userRoutes.get('/', protectRoute, restrictTo('admin','teacher'), getAllUsers);
+userRoutes.get('/', protectRoute, restrictTo('admin'), getAllUsers);
 userRoutes.get('/:id',checkIfUserExistById, singleUser);
-userRoutes.patch('/:id/status', protectRoute, restrictTo('admin','teacher'),validateAccountStatusUpdate, changeAccountStatus);
+userRoutes.patch('/:id/status', protectRoute, restrictTo('admin'),validateAccountStatusUpdate, changeAccountStatus);
 
 export default userRoutes;

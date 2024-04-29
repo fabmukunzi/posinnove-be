@@ -17,6 +17,11 @@ export const userSignup = async (req, res) => {
     };
     await UserService.register(user);
     const token = generateToken(user);
+    sendEmail({
+      to:email,
+      subject:"Posinnove Verification",
+      body:`localhost:5000/users/verify-email?token=${token}`
+    })
     res.status(201).json({
       message: "User created successfully",
       data: { token },
@@ -115,8 +120,6 @@ export const changeAccountStatus = async (req, res) => {
     }.</p>
       <p>Reason: ${activationReason}</p>
     `;
-
-    console.log(user.email);
     await sendEmail({
       to: user.email,
       subject: emailSubject,
