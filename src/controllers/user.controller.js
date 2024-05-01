@@ -1,11 +1,14 @@
 import { generateToken } from "../utils/token.generator";
-import { hashPassword, comparePassword } from "../utils/password.utils";
+import { hashPassword } from "../utils/password.utils";
 import { UserService } from "../services/user.service";
+import User from "../database/models/user.model"
 import sendEmail from "../utils/sendMail";
+import jwt from 'jsonwebtoken';
 
 export const userSignup = async (req, res) => {
   const { firstName, lastName, password, email, gender, role } = req.body;
   const hashedPassword = await hashPassword(password);
+
   try {
     const user = {
       firstName,
@@ -15,19 +18,80 @@ export const userSignup = async (req, res) => {
       gender,
       role,
     };
-    await UserService.register(user);
-    const token = generateToken(user);
-    sendEmail({
-      to:email,
-      subject:"Posinnove Verification",
-      body:`localhost:5000/users/verify-email?token=${token}`
-    })
+    const createdUser = await UserService.register(user);
+    const token = generateToken({ id: createdUser.id, email: createdUser.email });
+  sendEmail({
+      to: email,
+      subject: "Posinnove Verification",
+      body: `
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+              }
+              .verification-link {
+                color: #007bff;
+                text-decoration: none;
+              }
+              .verification-link:hover {
+                text-decoration: underline;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h2>Posinnove Account Verification</h2>
+              <p>Dear ${firstName} ${lastName},</p>
+              <p>Please click the following link to verify your Posinnove account:</p>
+              <p><a class="verification-link" href=${process.env.baseURL}/api/users/verify-email/${token}>Verify Email</a></p>
+              <p>If you didn't create an account with Posinnove, you can safely ignore this email.</p>
+            </div>
+          </body>
+        </html>
+      `,
+    });
     res.status(201).json({
-      message: "User created successfully",
-      data: { token },
+      message: "User created successfully, check your email to verify Account",
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const verifyAccount = async (req, res) => {
+  try {
+    const token = req.params.token;
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decodedToken.id;
+    const email = decodedToken.email;
+    const user = await User.findOne({
+      where: { id: userId, email: email, verified: false },
+    });
+
+    if (user && !user.verified) {
+      const updatedUser = await user.update({ verified: true });
+      if (updatedUser) {
+        res.status(201).json({
+          status: "success",
+          message: "Account verified please login to continue",
+        });
+      }
+    } else {
+      res.status(400).json({
+        status: "fail",
+        message: "Verification failed",
+        });
+    }
+  } catch (error) {
+    res.status(400).json({ 
+      status: "fail",
+      message: "Invalid token" ,
       error: error.message,
     });
   }

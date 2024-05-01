@@ -56,7 +56,12 @@ const User = sequelize.define('User', {
   active:{
     type: DataTypes.BOOLEAN,
     defaultValue: true,
+  },
+  verified:{
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   }
+
 }, {
   timestamps: true,
   tableName: 'users',
