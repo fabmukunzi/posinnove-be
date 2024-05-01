@@ -16,53 +16,53 @@ const baseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : '';
 
-export const KoalaWelcomeEmail = ({ userFirstname }) => (
+export const VerificationEmail = ({ userFirstname, verificationLink }) => (
   <Html>
     <Head />
     <Preview>
-      The sales intelligence platform that helps you uncover qualified leads.
+      Verify your email address for Posinnove Tech Solutions e-learning platform
     </Preview>
     <Body style={main}>
       <Container style={container}>
         <Img
-          src={`${baseUrl}/static/koala-logo.png`}
+          src={`${baseUrl}/static/posinnove-logo.png`}
           width="170"
           height="50"
-          alt="Koala"
+          alt="Posinnove Tech Solutions"
           style={logo}
         />
         <Text style={paragraph}>Hi {userFirstname},</Text>
         <Text style={paragraph}>
-          Welcome to Koala, the sales intelligence platform that helps you
-          uncover qualified leads and close deals faster.
+          Welcome to Posinnove Tech Solutions e-learning platform! Before you can access all the amazing features and courses, please verify your email address by clicking the button below.
         </Text>
         <Section style={btnContainer}>
-          <Button style={button} href="https://getkoala.com">
-            Get started
+          <Button style={button} href={verificationLink}>
+            Verify Email
           </Button>
         </Section>
         <Text style={paragraph}>
-          Best,
+          Thank you for joining us!
           <br />
-          The Koala team
+          The Posinnove Tech Solutions Team
         </Text>
         <Hr style={hr} />
         <Text style={footer}>
-          470 Noor Ave STE B #1148, South San Francisco, CA 94080
+          Posinnove Tech Solutions | Address, City
         </Text>
       </Container>
     </Body>
   </Html>
 );
 
-KoalaWelcomeEmail.PreviewProps = {
-  userFirstname: 'Alan',
+VerificationEmail.PreviewProps = {
+  userFirstname: '',
+  verificationLink: 'https://posinnove.com//verify-email',
 };
 
-export default KoalaWelcomeEmail;
+export default VerificationEmail;
 
 const main = {
-  backgroundColor: '#ffffff',
+  backgroundColor: '#f5f5f5',
   fontFamily:
     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 };
@@ -79,6 +79,7 @@ const logo = {
 const paragraph = {
   fontSize: '16px',
   lineHeight: '26px',
+  color: '#444444',
 };
 
 const btnContainer = {
@@ -88,7 +89,7 @@ const btnContainer = {
 const button = {
   backgroundColor: '#5F51E8',
   borderRadius: '3px',
-  color: '#fff',
+  color: '#ffffff',
   fontSize: '16px',
   textDecoration: 'none',
   textAlign: 'center',
@@ -102,6 +103,6 @@ const hr = {
 };
 
 const footer = {
-  color: '#8898aa',
+  color: '#777777',
   fontSize: '12px',
 };
