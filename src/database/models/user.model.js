@@ -60,6 +60,24 @@ const User = sequelize.define('User', {
   verified:{
     type: DataTypes.BOOLEAN,
     defaultValue: false,
+  },
+  institution:{
+    type: DataTypes.STRING,
+    allowNull: true,
+
+  },
+  country:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  About:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  phone:{
+    type:DataTypes.STRING,
+    allowNull: true,
+  
   }
 
 }, {
