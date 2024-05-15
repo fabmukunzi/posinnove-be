@@ -5,6 +5,7 @@ import User from "../database/models/user.model"
 import sendEmail from "../utils/sendMail";
 import jwt from 'jsonwebtoken';
 
+
 export const userSignup = async (req, res) => {
   const { firstName, lastName, password, email, gender, role } = req.body;
   const hashedPassword = await hashPassword(password);
@@ -201,3 +202,97 @@ export const changeAccountStatus = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+export const forgetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Please enter your email"
+      });
+    }
+
+    const user = await UserService.getUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found"
+      });
+    }
+    const resetToken = generateToken(user,'10min');
+    sendEmail({
+      to: email,
+      subject: "Posinnove ResetPassword",
+      body: `
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+              }
+              .verification-link {
+                color: #007bff;
+                text-decoration: none;
+              }
+              .verification-link:hover {
+                text-decoration: underline;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h2>Posinnove Account Verification</h2>
+              <p>Please click the following link to verify your Posinnove account:</p>
+              <p><a class="verification-link" href=${process.env.baseURL}/api/users/resetPassword/${resetToken}>Verify Email</a></p>
+              <p>If you didn't create an account with Posinnove, you can safely ignore this email.</p>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+    res.status(200).json({
+      status: "success",
+      message: " sent successfully"
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message || "Internal Server Error"
+    });
+  }
+};
+
+export const resetPassword=async(req, res) => {
+  const token = req.params.token;
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  const userId = decodedToken.id;
+
+  const user = await User.findOne({
+    where: { id: userId},
+  });
+  console.log(userId);
+  console.log('=======================');
+  if(!user){
+    return res.status(404).json({
+      status: "fail",
+      message: "Inavlid or expired token"
+    });
+  }
+  const { password } = req.body;
+   const hashedPassword=await hashPassword(password)
+
+  user.password=hashedPassword;
+  await user.save();
+
+  return res.status(200).json({
+    status: "success",
+    message: "Password reset successfully"
+  });
+}

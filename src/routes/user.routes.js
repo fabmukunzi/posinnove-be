@@ -3,7 +3,9 @@ import {
   userLogin,
   getAllUsers,
   singleUser,
-  changeAccountStatus
+  changeAccountStatus,
+  forgetPassword,
+  resetPassword
 } from '../controllers/user.controller';
 import express from 'express';
 import validateUser from '../validations/user.validation';
@@ -16,6 +18,9 @@ import { verifyAccount } from '../controllers/user.controller';
 const userRoutes = express.Router();
 userRoutes.get('/verify-email/:token', verifyAccount);
 userRoutes.post('/signup',validateUser, checkUserExistenceByEmail,  userSignup);
+userRoutes.post('/login', checkUserExistenceByEmail,CheckLoginPassword,isUserActive, userLogin);
+userRoutes.post('/forgetpassword',forgetPassword)
+userRoutes.patch('/resetpassword/:token',resetPassword)
 userRoutes.get('/', protectRoute, restrictTo('admin'), getAllUsers);
 userRoutes.post('/login', checkUserExistenceByEmail,CheckLoginPassword,isUserActive,isVerified,userLogin);
 userRoutes.get('/', protectRoute, restrictTo('admin','teacher'), getAllUsers);

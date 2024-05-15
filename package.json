@@ -6,16 +6,19 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec npx babel-node server"
+    "dev": "nodemon --exec npx babel-node server",
+    "migrate": "sequelize db:migrate"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "install": "^0.13.0",
     "joi": "^17.12.3",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
     "nodemailer": "^6.9.13",
     "npm": "^10.5.2",
     "pg": "^8.11.5",
