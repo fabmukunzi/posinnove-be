@@ -1,0 +1,12 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    environment:     
+      POSTGRES_PASSWORD: ${DEV_DB_PASS}
+      POSTGRES_USER: ${DEV_DB_USER}
+      POSTGRES_DB: ${DEV_DB_NAME}
+  app:
+    image: e-commerce-app
+    ports:
+      - "13000:3000"

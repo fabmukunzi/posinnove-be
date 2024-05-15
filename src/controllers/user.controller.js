@@ -4,6 +4,7 @@ import { UserService } from "../services/user.service";
 import User from "../database/models/user.model"
 import sendEmail from "../utils/sendMail";
 import jwt from 'jsonwebtoken';
+import { generateResetPasswordToken } from "../utils/resetPasswordToken";
 
 export const userSignup = async (req, res) => {
   const { firstName, lastName, password, email, gender, role } = req.body;
@@ -199,5 +200,42 @@ export const changeAccountStatus = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+
+export const forgetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Please enter your email"
+      });
+    }
+
+    const user = await UserService.getUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found"
+      });
+    }
+    const resetToken = generateToken(user,'10min');
+    user.resetPasswordToken = resetToken;
+    // 1 hour
+
+    await user.save({ validateBeforeSave: false });
+
+    console.log(resetToken);
+    res.status(200).json({
+      status: "success",
+      message: "Token sent successfully"
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message || "Internal Server Error"
+    });
   }
 };
