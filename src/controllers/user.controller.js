@@ -296,3 +296,63 @@ export const resetPassword=async(req, res) => {
     message: "Password reset successfully"
   });
 }
+export const getUserProfile = async (req, res) => {
+  const user = req.user;
+  console.log(user.email);
+  const userProfile = await UserService.getUserByEmail(user.email);
+  console.log(userProfile);
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: userProfile,
+    },
+  });
+};
+
+export const changePassword = async (req, res) => {
+  const currentUser=req.user;
+  console.log(currentUser)
+  const user = await User.findOne({
+    where: { id: currentUser.id },
+  });
+  if (!user) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Error in Changing Password",
+    });
+  }
+  const { newPassword } = req.body;
+  const hashedPassword = await hashPassword(newPassword);
+
+  user.password = hashedPassword;
+  await user.save();
+
+  return res.status(200).json({
+    status: "success",
+    message: "Password Changed successfully",
+  });
+};
+
+export const updateUserProfile = async (req, res) => {
+  const currentUser=req.user;
+  const user = await User.findOne({
+    where: { id: currentUser.id },
+  });
+  if (!user) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Error in Updating Profile",
+    });
+  }
+  const { firstName, lastName, email, gender } = req.body;
+  user.firstName = firstName;
+  user.lastName = lastName;
+  user.email = email;
+  user.gender = gender;
+  await user.save();
+
+  return res.status(200).json({
+    status: "success",
+    message: "Profile Updated successfully",
+  });
+}

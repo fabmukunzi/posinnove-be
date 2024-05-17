@@ -5,12 +5,14 @@ import {
   singleUser,
   changeAccountStatus,
   forgetPassword,
-  resetPassword
+  resetPassword,
+  getUserProfile,
+  changePassword
 } from '../controllers/user.controller';
 import express from 'express';
 import validateUser from '../validations/user.validation';
 import { protectRoute, restrictTo,isUserActive,isVerified } from '../middlewares/auth.middleware';
-import checkUserExistenceByEmail, { CheckLoginPassword, checkIfUserExistById } from '../middlewares/user.middleware';
+import checkUserExistenceByEmail, { CheckLoginPassword, CheckOldPassword, checkIfUserExistById } from '../middlewares/user.middleware';
 import validateAccountStatusUpdate from '../validations/disableAccount.validation';
 import { verifyAccount } from '../controllers/user.controller';
 
@@ -22,6 +24,8 @@ userRoutes.post('/login', checkUserExistenceByEmail,CheckLoginPassword,isUserAct
 userRoutes.post('/forgetpassword',forgetPassword)
 userRoutes.patch('/resetpassword/:token',resetPassword)
 userRoutes.get('/', protectRoute, restrictTo('admin'), getAllUsers);
+userRoutes.get('/profile', protectRoute, getUserProfile);
+userRoutes.patch('/profile/changepassword', protectRoute,CheckOldPassword, changePassword);
 userRoutes.post('/login', checkUserExistenceByEmail,CheckLoginPassword,isUserActive,isVerified,userLogin);
 userRoutes.get('/', protectRoute, restrictTo('admin','teacher'), getAllUsers);
 userRoutes.get('/:id',checkIfUserExistById, singleUser);

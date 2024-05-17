@@ -35,6 +35,19 @@ export const CheckLoginPassword = async (req, res, next) => {
   }
   next();
 };
+
+export const CheckOldPassword = async (req, res, next) => {
+  const { oldPassword } = req.body;
+  const user = req.user;
+  const currentUser= await UserService.getUserById(user.id);
+  const isValidPassword = await comparePassword(oldPassword, currentUser.password);
+  if (!isValidPassword) {
+    return res.status(400).json({ message: 'Incorrect old password' });
+  }
+  next();
+};
+
+
 export const checkIfUserExistById = async (req, res, next) => {
   const { id } = req.params;
   const user = await UserService.getUserById(id);
