@@ -7,7 +7,8 @@ import {
   forgetPassword,
   resetPassword,
   getUserProfile,
-  changePassword
+  changePassword,
+  updateUserProfile
 } from '../controllers/user.controller';
 import express from 'express';
 import validateUser from '../validations/user.validation';
@@ -26,6 +27,7 @@ userRoutes.patch('/resetpassword/:token',resetPassword)
 userRoutes.get('/', protectRoute, restrictTo('admin'), getAllUsers);
 userRoutes.get('/profile', protectRoute, getUserProfile);
 userRoutes.patch('/profile/changepassword', protectRoute,CheckOldPassword, changePassword);
+userRoutes.patch('/profile/updateprofile', protectRoute, updateUserProfile);
 userRoutes.post('/login', checkUserExistenceByEmail,CheckLoginPassword,isUserActive,isVerified,userLogin);
 userRoutes.get('/', protectRoute, restrictTo('admin','teacher'), getAllUsers);
 userRoutes.get('/:id',checkIfUserExistById, singleUser);

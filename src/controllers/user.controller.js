@@ -334,25 +334,47 @@ export const changePassword = async (req, res) => {
 };
 
 export const updateUserProfile = async (req, res) => {
-  const currentUser=req.user;
-  const user = await User.findOne({
-    where: { id: currentUser.id },
-  });
-  if (!user) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Error in Updating Profile",
-    });
-  }
-  const { firstName, lastName, email, gender } = req.body;
-  user.firstName = firstName;
-  user.lastName = lastName;
-  user.email = email;
-  user.gender = gender;
-  await user.save();
-
-  return res.status(200).json({
-    status: "success",
-    message: "Profile Updated successfully",
-  });
-}
+    try {
+      const currentUser = req.user;
+      const user = await User.findOne({
+        where: { id: currentUser.id },
+      });
+  
+      if (!user) {
+        return res.status(404).json({
+          status: "fail",
+          message: "User not found",
+        });
+      }
+  
+      const { firstName, lastName, email, gender } = req.body;
+  
+      // Update only the provided fields
+      if (firstName !== undefined) {
+        user.firstName = firstName;
+      }
+      if (lastName !== undefined) {
+        user.lastName = lastName;
+      }
+      if (email !== undefined) {
+        user.email = email;
+      }
+      if (gender !== undefined) {
+        user.gender = gender;
+      }
+  
+      await user.save();
+  
+      return res.status(200).json({
+        status: "success",
+        message: "Profile updated successfully",
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        status: "error",
+        message: "Internal server error",
+      });
+    }
+  };
+  
