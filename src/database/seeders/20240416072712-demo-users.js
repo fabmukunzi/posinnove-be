@@ -1,11 +1,11 @@
 'use strict';
-import { hashPassword } from '../../utils/password.utils';
+
 const { v4: uuidv4 } = require('uuid');
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('users', [
       {
-        id: uuidv4(),
+        id:'21a97b56-9dad-4aac-ad42-cd99b3c68109',
         firstName: 'John',
         lastName: 'Doe',
         username: 'johndoe',
@@ -17,7 +17,7 @@ module.exports = {
         updatedAt: new Date()
       },
       {
-        id: uuidv4(),
+        id: '3f1a89a2-23bc-4e57-8cc3-07d14ec67890',
         firstName: "ISHIMWE Ami Paradis",
         lastName: 'Doe',
         username: 'janedoe',
