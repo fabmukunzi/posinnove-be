@@ -2,6 +2,10 @@ import express from 'express';
 import userRoutes from './routes/user.routes';
 import morgan from 'morgan';
 import cors from 'cors';
+<<<<<<< HEAD
+=======
+import projectRoutes from './routes/project.routes';
+>>>>>>> ae3c341 (Ft creating  Projects)
 
 import projectCategory from './routes/projectCategory.routes';
 
@@ -16,6 +20,10 @@ app.get('/', (req, res) => {
 });
 app.use('/api/users', userRoutes);
 app.use('/api/categories', projectCategory);
+<<<<<<< HEAD
+=======
+app.use('/api/project',projectRoutes)
+>>>>>>> ae3c341 (Ft creating  Projects)
 
 
 
