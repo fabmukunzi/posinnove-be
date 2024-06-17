@@ -1,14 +1,13 @@
-'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    
-    await queryInterface.createTable('courses', {
+    await queryInterface.createTable('project_categories', {
       id: {
         type: Sequelize.UUID,
+        allowNull: false,
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
       },
-      title: {
+      projectCategory: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -16,31 +15,20 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      courseThumbnail: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      tutorId: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id',
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
-        },
-      },
       createdAt: {
-        allowNull: false,
         type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
-        allowNull: false,
         type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
       },
     });
   },
+
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('courses');
+    await queryInterface.dropTable('project_categories');
   },
 };

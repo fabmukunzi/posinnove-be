@@ -1,6 +1,7 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import dotenv from 'dotenv';
-import Course from './course.model';
+
+
 
 dotenv.config();
 
@@ -9,13 +10,13 @@ const sequelize = new Sequelize(process.env.DEV_DATABASE_URL, {
   logging: false,
 });
 
-const courseCategory = sequelize.define('courseCategory', {
+const projectCategory = sequelize.define('projectCategory', {
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4,
   },
-  courseCategory: {
+  projectCategory: {  
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -23,17 +24,18 @@ const courseCategory = sequelize.define('courseCategory', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  createdAt:{
+  createdAt: {
     type: DataTypes.DATE,
     defaultValue: Sequelize.NOW,
   },
-  updatedAt:{
+  updatedAt: {
     type: DataTypes.DATE,
     defaultValue: Sequelize.NOW,
   },
 }, {
   timestamps: true,
-  tableName: 'course_categories',
+  tableName: 'project_categories',  
 });
-courseCategory.hasMany(Course, { foreignKey: "categoryId" });
-export default courseCategory;
+
+// projectCategory.hasMany(Project, { foreignKey: "categoryId" });  
+export default projectCategory;
