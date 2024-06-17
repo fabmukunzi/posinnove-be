@@ -7,9 +7,6 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec npx babel-node server",
-   
-
-   
     "start": "node index.js",
     "migrate": "sequelize db:migrate",
     "migrate:undo": "sequelize db:migrate:undo",
