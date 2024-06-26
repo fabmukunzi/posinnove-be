@@ -128,6 +128,20 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+export const getProfile = async (req, res) => {
+  try {
+    const user = await UserService.getUserById(req.user.id)
+    res.status(200).json({
+      message: "Profile fetched successfully",
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
 export const singleUser = async (req, res) => {
   const { id } = req.params;
   try {

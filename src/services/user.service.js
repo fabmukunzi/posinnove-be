@@ -6,7 +6,7 @@ export class UserService {
   }
 
   static async getUserById(id) {
-    return await User.findOne({ where: { id: id } });
+    return await User.findOne({ where: { id: id },exclude:['password'] });
   }
 
   static async getUserByEmail(email) {
