@@ -61,7 +61,6 @@ export const isVerified = async (req, res,next) => {
     const user = await UserService.getUserByEmail(email);
     if (!user.verified) {
       const token = generateToken({ id: user.id, email: user.email });
-      console.log(token);
       sendEmail({
         to: email,
         subject: "Posinnove Verification",
