@@ -21,7 +21,7 @@ export const userSignup = async (req, res) => {
     };
     const createdUser = await UserService.register(user);
     const token = generateToken({ id: createdUser.id, email: createdUser.email });
-  sendEmail({
+  await sendEmail({
       to: email,
       subject: "Posinnove Verification",
       body: `
