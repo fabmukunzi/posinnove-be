@@ -2,6 +2,7 @@ import express from 'express';
 import userRoutes from './routes/user.routes';
 import morgan from 'morgan';
 import cors from 'cors';
+import projectRoutes from './routes/project.routes';
 
 import projectCategory from './routes/projectCategory.routes';
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 });
 app.use('/api/users', userRoutes);
 app.use('/api/categories', projectCategory);
+app.use("/api/projects",projectRoutes)
 
 
 
