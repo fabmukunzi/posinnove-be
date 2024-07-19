@@ -6,12 +6,8 @@ const usersValidation = Joi.object({
     .required()
     .messages({ 'string.email': 'Please enter a valid email address' }),
   password: Joi.string()
-    .pattern(
-      new RegExp(
-        '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
-      )
-    )
     .required()
+    .min(6)
     .messages({
       'string.pattern.base':
         'Password must contain at least one lowercase letter, one uppercase letter, one digit, one special character, and be at least 8 characters long.',
