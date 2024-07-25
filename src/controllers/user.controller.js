@@ -4,6 +4,8 @@ import { UserService } from "../services/user.service";
 import User from "../database/models/user.model"
 import sendEmail from "../utils/sendMail";
 import jwt from 'jsonwebtoken';
+import { retryUpload } from '../helpers/retryUpload';
+import fs from 'fs';
 
 
 export const userSignup = async (req, res) => {
@@ -310,3 +312,56 @@ export const resetPassword=async(req, res) => {
     message: "Password reset successfully"
   });
 }
+
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const updates = req.body;
+
+    const user = await UserService.getUserById(userId);
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User not found',
+      });
+    }
+
+    
+    if (req.file) {
+      const filePath = req.file.path;
+      const folder = 'profileImages';
+      try {
+        const profileImageUrl = await retryUpload(filePath, folder);
+        updates.profileImage = profileImageUrl;
+
+        fs.unlinkSync(filePath);
+      } catch (error) {
+        console.error('Error uploading file to Cloudinary:', error);
+        return res.status(500).json({
+          status: 'error',
+          message: 'Error uploading profile image',
+        });
+      }
+    }
+
+
+    Object.keys(updates).forEach((key) => {
+      if (updates[key] !== undefined) {
+        user[key] = updates[key];
+      }
+    });
+
+    await user.save();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Profile updated successfully',
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message || 'Internal Server Error',
+    });
+  }
+};
