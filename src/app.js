@@ -5,10 +5,14 @@ import cors from 'cors';
 import projectRoutes from './routes/project.routes';
 
 import projectCategory from './routes/projectCategory.routes';
+import docs from './documentation';
 
+// const swaggerDocument = require('./swagger.json');
+import swaggerUi from 'swagger-ui-express';
 
 
 const app = express();
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(docs));
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));

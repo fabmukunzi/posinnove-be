@@ -16,9 +16,9 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.2.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
-    "cloudinary": "^2.2.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "install": "^0.13.0",
@@ -33,6 +33,9 @@
     "react-email": "^1.10.1",
     "sequelize": "^6.37.3",
     "sqlite3": "^5.1.7",
+    "swagger-autogen": "^2.23.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
