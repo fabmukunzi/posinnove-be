@@ -29,7 +29,7 @@ const upload = createMulterInstance('profileImages');
 
 const userRoutes = express.Router();
 userRoutes.get('/profile', protectRoute, getProfile);
-userRoutes.patch('/profile/updateProfile', protectRoute, upload.single('profileImage'), updateProfile);
+userRoutes.patch('/profile', protectRoute, upload.single('profileImage'), updateProfile);
 userRoutes.get('/verify-email/:token', verifyAccount);
 userRoutes.post('/signup', validateUser, checkUserExistenceByEmail, userSignup);
 userRoutes.post(

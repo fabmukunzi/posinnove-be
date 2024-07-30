@@ -6,6 +6,7 @@ import sendEmail from "../utils/sendMail";
 import jwt from 'jsonwebtoken';
 import { retryUpload } from '../helpers/retryUpload';
 import fs from 'fs';
+import Joi from 'joi';
 
 
 export const userSignup = async (req, res) => {
@@ -313,20 +314,45 @@ export const resetPassword=async(req, res) => {
   });
 }
 
+//update profile start from here
+// Define the validation schema using Joi
+const updateProfileSchema = Joi.object({
+  firstName: Joi.string().optional(),
+  lastName: Joi.string().optional(),
+  username: Joi.string().optional(),
+  gender: Joi.string().valid('male', 'female', 'other').optional(),
+  institution: Joi.string().optional(),
+  country: Joi.string().optional(),
+  About: Joi.string().optional(),
+  phone: Joi.string().optional(),
+  // Ensure at least one field is present
+}).or('firstName', 'lastName', 'username', 'gender', 'institution', 'country', 'About', 'phone'); 
+
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const updates = req.body;
 
-    const user = await UserService.getUserById(userId);
-    if (!user) {
-      return res.status(404).json({
+    // Validate the request body using Joi
+    const { error, value: updates } = updateProfileSchema.validate(req.body, { abortEarly: false });
+
+    if (error && !req.file) { 
+      return res.status(400).json({
         status: 'fail',
-        message: 'User not found',
+        message: 'Validation error',
+        errors: error.details,
       });
     }
 
-    
+    // Check if email or password is in the request body
+    if (req.body.email || req.body.password) {
+      return res.status(400).send({
+        error: "It is not possible to update email or password here",
+      });
+    }
+
+    const user = await UserService.getUserById(userId);
+
+    // Handle profile image upload
     if (req.file) {
       const filePath = req.file.path;
       const folder = 'profileImages';
@@ -334,6 +360,7 @@ export const updateProfile = async (req, res) => {
         const profileImageUrl = await retryUpload(filePath, folder);
         updates.profileImage = profileImageUrl;
 
+        // Remove the file from the local server
         fs.unlinkSync(filePath);
       } catch (error) {
         console.error('Error uploading file to Cloudinary:', error);
@@ -344,19 +371,42 @@ export const updateProfile = async (req, res) => {
       }
     }
 
-
-    Object.keys(updates).forEach((key) => {
-      if (updates[key] !== undefined) {
-        user[key] = updates[key];
-      }
-    });
+    // Update user fields with the new values
+    user.firstName = updates.firstName !== undefined ? updates.firstName : user.firstName;
+    user.lastName = updates.lastName !== undefined ? updates.lastName : user.lastName;
+    user.username = updates.username !== undefined ? updates.username : user.username;
+    user.gender = updates.gender !== undefined ? updates.gender : user.gender; 
+    user.institution = updates.institution !== undefined ? updates.institution : user.institution;
+    user.country = updates.country !== undefined ? updates.country : user.country;
+    user.About = updates.About !== undefined ? updates.About : user.About;
+    user.phone = updates.phone !== undefined ? updates.phone : user.phone;
+    user.profileImage = updates.profileImage !== undefined ? updates.profileImage : user.profileImage;
 
     await user.save();
+
+    // fields needed in response
+    const responseData = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      email: user.email,
+      profileImage: user.profileImage,
+      gender: user.gender,
+      role: user.role,
+      institution: user.institution,
+      country: user.country,
+      About: user.About,
+      phone: user.phone,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      active: user.active,
+      verified: user.verified,
+    };
 
     res.status(200).json({
       status: 'success',
       message: 'Profile updated successfully',
-      data: user,
+      data: responseData,
     });
   } catch (error) {
     res.status(500).json({
