@@ -4,6 +4,9 @@ import { UserService } from "../services/user.service";
 import User from "../database/models/user.model"
 import sendEmail from "../utils/sendMail";
 import jwt from 'jsonwebtoken';
+import { retryUpload } from '../helpers/retryUpload';
+import fs from 'fs';
+import { updateProfileSchema } from '../validations/user.updateProfile.validation';
 
 
 export const userSignup = async (req, res) => {
@@ -310,3 +313,68 @@ export const resetPassword=async(req, res) => {
     message: "Password reset successfully"
   });
 }
+
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Validate the request body using Joi
+    const { error, value: updates } = updateProfileSchema.validate(req.body, { abortEarly: false });
+
+    if (error && !req.file) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Validation error',
+        errors: error.details,
+      });
+    }
+
+    const user = await UserService.getUserById(userId);
+
+    // Handle profile image upload
+    if (req.file) {
+      const filePath = req.file.path;
+      const folder = 'profileImages';
+      try {
+        const profileImageUrl = await retryUpload(filePath, folder);
+        updates.profileImage = profileImageUrl;
+
+        // Remove the file from the local server
+        fs.unlinkSync(filePath);
+      } catch (error) {
+        console.error('Error uploading file to Cloudinary:', error);
+        return res.status(500).json({
+          status: 'error',
+          message: 'Error uploading profile image',
+        });
+      }
+    }
+
+    //hashing password if updated
+    if (updates.password) {
+      updates.password = await hashPassword(updates.password);
+    }
+
+    // Update user fields with the new values
+    await User.update(updates, { where: { id: userId } });
+
+    // fields needed in response
+    const responseData = await User.findOne({
+      where: { id: userId },
+      attributes: {
+        exclude: ['password'],
+      },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Profile updated successfully',
+      data: responseData,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message || 'Internal Server Error',
+    });
+  }
+};
