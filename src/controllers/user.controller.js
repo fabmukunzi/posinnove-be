@@ -356,18 +356,7 @@ export const updateProfile = async (req, res) => {
     }
 
     // Update user fields with the new values
-    user.firstName = updates.firstName !== undefined ? updates.firstName : user.firstName;
-    user.lastName = updates.lastName !== undefined ? updates.lastName : user.lastName;
-    user.username = updates.username !== undefined ? updates.username : user.username;
-    user.gender = updates.gender !== undefined ? updates.gender : user.gender; 
-    user.institution = updates.institution !== undefined ? updates.institution : user.institution;
-    user.country = updates.country !== undefined ? updates.country : user.country;
-    user.About = updates.About !== undefined ? updates.About : user.About;
-    user.phone = updates.phone !== undefined ? updates.phone : user.phone;
-    user.profileImage = updates.profileImage !== undefined ? updates.profileImage : user.profileImage;
-    user.password = updates.password !== undefined ? updates.password : user.password;
-
-    await user.save();
+    await User.update(updates, { where: { id: userId } });
 
     // fields needed in response
     const responseData = await User.findOne({
