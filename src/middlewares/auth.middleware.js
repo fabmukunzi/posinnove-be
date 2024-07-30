@@ -4,7 +4,8 @@ import { generateToken } from '../utils/token.generator';
 import sendEmail from '../utils/sendMail';
 export const protectRoute = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    const authHeader = req.headers.authorization;
+const token = authHeader ? authHeader.split(' ')[1] : null;
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET,
