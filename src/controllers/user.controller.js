@@ -6,7 +6,7 @@ import sendEmail from "../utils/sendMail";
 import jwt from 'jsonwebtoken';
 import { retryUpload } from '../helpers/retryUpload';
 import fs from 'fs';
-import Joi from 'joi';
+import { updateProfileSchema } from '../validations/user.updateProfile.validation';
 
 
 export const userSignup = async (req, res) => {
@@ -314,20 +314,6 @@ export const resetPassword=async(req, res) => {
   });
 }
 
-//update profile start from here
-// Define the validation schema using Joi
-const updateProfileSchema = Joi.object({
-  firstName: Joi.string().optional(),
-  lastName: Joi.string().optional(),
-  username: Joi.string().optional(),
-  gender: Joi.string().valid('male', 'female', 'other').optional(),
-  institution: Joi.string().optional(),
-  country: Joi.string().optional(),
-  About: Joi.string().optional(),
-  phone: Joi.string().optional(),
-  // Ensure at least one field is present
-}).or('firstName', 'lastName', 'username', 'gender', 'institution', 'country', 'About', 'phone'); 
-
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -335,18 +321,11 @@ export const updateProfile = async (req, res) => {
     // Validate the request body using Joi
     const { error, value: updates } = updateProfileSchema.validate(req.body, { abortEarly: false });
 
-    if (error && !req.file) { 
+    if (error && !req.file) {
       return res.status(400).json({
         status: 'fail',
         message: 'Validation error',
         errors: error.details,
-      });
-    }
-
-    // Check if email or password is in the request body
-    if (req.body.email || req.body.password) {
-      return res.status(400).send({
-        error: "It is not possible to update email or password here",
       });
     }
 
@@ -371,6 +350,11 @@ export const updateProfile = async (req, res) => {
       }
     }
 
+    //hashing password if updated
+    if (updates.password) {
+      updates.password = await hashPassword(updates.password);
+    }
+
     // Update user fields with the new values
     user.firstName = updates.firstName !== undefined ? updates.firstName : user.firstName;
     user.lastName = updates.lastName !== undefined ? updates.lastName : user.lastName;
@@ -381,27 +365,17 @@ export const updateProfile = async (req, res) => {
     user.About = updates.About !== undefined ? updates.About : user.About;
     user.phone = updates.phone !== undefined ? updates.phone : user.phone;
     user.profileImage = updates.profileImage !== undefined ? updates.profileImage : user.profileImage;
+    user.password = updates.password !== undefined ? updates.password : user.password;
 
     await user.save();
 
     // fields needed in response
-    const responseData = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-      email: user.email,
-      profileImage: user.profileImage,
-      gender: user.gender,
-      role: user.role,
-      institution: user.institution,
-      country: user.country,
-      About: user.About,
-      phone: user.phone,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      active: user.active,
-      verified: user.verified,
-    };
+    const responseData = await User.findOne({
+      where: { id: userId },
+      attributes: {
+        exclude: ['password'],
+      },
+    });
 
     res.status(200).json({
       status: 'success',
