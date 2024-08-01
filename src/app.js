@@ -12,7 +12,7 @@ import swaggerUi from 'swagger-ui-express';
 
 
 const app = express();
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(docs));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(docs));
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
