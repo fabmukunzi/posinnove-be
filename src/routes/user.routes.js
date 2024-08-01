@@ -7,6 +7,7 @@ import {
   forgetPassword,
   resetPassword,
   getProfile,
+  updateProfile
 } from '../controllers/user.controller';
 import express from 'express';
 import validateUser from '../validations/user.validation';
@@ -22,9 +23,13 @@ import checkUserExistenceByEmail, {
 } from '../middlewares/user.middleware';
 import validateAccountStatusUpdate from '../validations/disableAccount.validation';
 import { verifyAccount } from '../controllers/user.controller';
+import createMulterInstance from '../helpers/multer';
+
+const upload = createMulterInstance('profileImages');
 
 const userRoutes = express.Router();
 userRoutes.get('/profile', protectRoute, getProfile);
+userRoutes.patch('/profile', protectRoute, upload.single('profileImage'), updateProfile);
 userRoutes.get('/verify-email/:token', verifyAccount);
 userRoutes.post('/signup', validateUser, checkUserExistenceByEmail, userSignup);
 userRoutes.post(
@@ -53,5 +58,4 @@ userRoutes.patch(
   validateAccountStatusUpdate,
   changeAccountStatus
 );
-
 export default userRoutes;
