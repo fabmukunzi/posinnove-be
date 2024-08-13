@@ -72,39 +72,45 @@ export const verifyAccount = async (req, res) => {
   try {
     const token = req.params.token;
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decodedToken.id;
-    const email = decodedToken.email;
+    const { id: userId, email } = decodedToken;
+    
     const user = await User.findOne({
-      where: { id: userId, email: email, verified: false },
+      where: { id: userId, email: email },
     });
 
-    if (user && !user.verified) {
-      const updatedUser = await user.update({ verified: true });
-      if (updatedUser) {
-        res.status(201).json({
-          status: "success",
-          message: "Account verified please login to continue",
-        });
-      }
-    } 
-    else if(user && user.verified){
-      res.status(200).json({
-        status:"success",
-        message: "Account verified please login to continue",
-    })
+    if (!user) {
+      return res.status(400).json({
+        status: "fail",
+        message: "User not found",
+      });
+    }
 
+    if (user.verified) {
+      return res.status(200).json({
+        status: "success",
+        message: "Account already verified. Please login to continue",
+      });
+    }
+
+    await user.update({ verified: true });
+
+    return res.status(200).json({
+      status: "success",
+      message: "Account verified. Please login to continue",
+    });
+
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Invalid token",
+        error: error.message,
+      });
     }
     
-    else {
-      res.status(400).json({
-        status: "fail",
-        message: "Verification failed",
-        });
-    }
-  } catch (error) {
-    res.status(400).json({ 
-      status: "fail",
-      message: "Invalid token" ,
+    return res.status(500).json({
+      status: "error",
+      message: "An unexpected error occurred",
       error: error.message,
     });
   }
