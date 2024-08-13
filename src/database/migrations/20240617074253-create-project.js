@@ -16,6 +16,12 @@ module.exports = {
       projectCategoryId: {
         type: Sequelize.UUID,
         allowNull: false,
+        references: {
+          model: 'project_categories',
+          key: 'id',
+        },
+         onUpdate: 'CASCADE',
+         onDelete: 'CASCADE'
       },
       coverImage: {
         type: Sequelize.STRING,
@@ -32,6 +38,13 @@ module.exports = {
       author: {
         type: Sequelize.UUID,
         allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+         onUpdate: 'CASCADE',
+         onDelete: 'CASCADE'
+        
       },
       maxAttendances: {
         type: Sequelize.INTEGER,

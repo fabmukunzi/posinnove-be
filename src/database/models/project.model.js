@@ -25,9 +25,12 @@ const Project = sequelize.define('projects', {
     type: DataTypes.UUID, 
     allowNull: false,
     references: {
-      model: 'ProjectCategory',
+      model: projectCategory,
       key: 'id',
     },
+     onUpdate: 'CASCADE',
+     onDelete: 'CASCADE'
+  
   },
   coverImage: {
     type: DataTypes.STRING,
@@ -46,9 +49,12 @@ const Project = sequelize.define('projects', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'User',
+      model: User,
       key: 'id',
     },
+     onUpdate: 'CASCADE',
+     onDelete: 'CASCADE'
+  
   },
   maxAttendances: {
     type: DataTypes.INTEGER,
