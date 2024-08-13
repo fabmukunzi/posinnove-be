@@ -86,7 +86,16 @@ export const verifyAccount = async (req, res) => {
           message: "Account verified please login to continue",
         });
       }
-    } else {
+    } 
+    else if(user && user.verified){
+      res.status(200).json({
+        status:"success",
+        message: "Account verified please login to continue",
+    })
+
+    }
+    
+    else {
       res.status(400).json({
         status: "fail",
         message: "Verification failed",
@@ -184,7 +193,7 @@ export const changeAccountStatus = async (req, res) => {
     const user = await UserService.getUserById(id);
     user.active = !user.active;
     user.reasonDeactivated = reasonDeactivated;
-    await user.save();
+    await user.save();F
 
     let emailSubject;
     let activationReason;
