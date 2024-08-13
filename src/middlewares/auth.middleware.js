@@ -91,7 +91,7 @@ export const isVerified = async (req, res,next) => {
                 <h2>Posinnove Account Verification</h2>
                 <p>Dear ${user.firstName} ${user.lastName},</p>
                 <p>Please click the following link to verify your Posinnove account:</p>
-                <p><a class="verification-link" href=${process.env.baseURL}/api/users/verify-email/${token}>Verify Email</a></p>
+                <p><a class="verification-link" href=${process.env.FRONT_END_URL}/verify-email/${token}>Verify Email</a></p>
                 <p>If you didn't create an account with Posinnove, you can safely ignore this email.</p>
               </div>
             </body>
