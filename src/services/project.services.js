@@ -1,8 +1,24 @@
 import Project from '../database/models/project.model';
+import User from '../database/models/user.model';
+import ProjectCategory from '../database/models/projectCategory.model';
 
 export class ProjectService {
   static async getProjectById(id) {
-    return await Project.findOne({ where: { id } });
+    return await Project.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          as: 'projectAuthor',
+          attributes: ['firstName', 'lastName', 'email']
+        },
+        {
+          model: ProjectCategory,
+          as: 'category',
+          attributes: ['id', 'projectCategory']
+        }
+      ]
+    });
   }
 
   static async createProject(newProject) {
@@ -18,6 +34,19 @@ export class ProjectService {
   }
 
   static async getProjects() {
-    return await Project.findAll();
+    return await Project.findAll({
+      include: [
+        {
+          model: User,
+          as: 'projectAuthor',
+          attributes: ['firstName', 'lastName', 'email']
+        },
+        {
+          model: ProjectCategory,
+          as: 'category',
+          attributes: ['id', 'projectCategory']
+        }
+      ]
+    });
   }
 }
