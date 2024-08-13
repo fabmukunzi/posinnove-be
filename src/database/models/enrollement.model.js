@@ -19,17 +19,21 @@ const Enrollment = sequelize.define('Enrollment', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'User',
+      model: User,
       key: 'id',
     },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   },
   projectId: {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Project',
+      model: Project,
       key: 'id',
     },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   },
   enrollmentDate: {
     type: DataTypes.DATE,
@@ -39,6 +43,5 @@ const Enrollment = sequelize.define('Enrollment', {
   timestamps: true,
   tableName: 'enrollments',
 });
-
 
 export default Enrollment;
