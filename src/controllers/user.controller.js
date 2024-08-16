@@ -53,7 +53,7 @@ export const userSignup = async (req, res) => {
               <h2>Posinnove Account Verification</h2>
               <p>Dear ${firstName} ${lastName},</p>
               <p>Please click the following link to verify your Posinnove account:</p>
-              <p><a class="verification-link" href=${process.env.baseURL}/api/users/verify-email/${token}>Verify Email</a></p>
+              <p><a class="verification-link" href=${process.env.FRONT_END_URL}/verify-email/${token}>Verify Email</a></p>
               <p>If you didn't create an account with Posinnove, you can safely ignore this email.</p>
             </div>
           </body>
@@ -267,7 +267,7 @@ export const forgetPassword = async (req, res) => {
             <div class="container">
               <h2>Posinnove Account Verification</h2>
               <p>Please click the following link to verify your Posinnove account:</p>
-              <p><a class="verification-link" href=${process.env.baseURL}/api/users/resetPassword/${resetToken}>Verify Email</a></p>
+              <p><a class="verification-link" href=${process.env.FRONT_END_URL}/resetPassword/${resetToken}>Verify Email</a></p>
               <p>If you didn't create an account with Posinnove, you can safely ignore this email.</p>
             </div>
           </body>
@@ -294,12 +294,10 @@ export const resetPassword=async(req, res) => {
   const user = await User.findOne({
     where: { id: userId},
   });
-  console.log(userId);
-  console.log('=======================');
   if(!user){
     return res.status(404).json({
       status: "fail",
-      message: "Inavlid or expired token"
+      message: "Invalid or expired token"
     });
   }
   const { password } = req.body;
