@@ -21,7 +21,7 @@ module.exports = {
           key: 'id',
         },
          onUpdate: 'CASCADE',
-         onDelete: 'CASCADE'
+         onDelete: 'SET NULL',
       },
       coverImage: {
         type: Sequelize.STRING,

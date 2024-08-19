@@ -29,7 +29,8 @@ const Project = sequelize.define('projects', {
       key: 'id',
     },
      onUpdate: 'CASCADE',
-     onDelete: 'CASCADE'
+     onDelete: 'SET NULL',
+  
   
   },
   coverImage: {
