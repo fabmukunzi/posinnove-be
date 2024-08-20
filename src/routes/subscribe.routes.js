@@ -5,6 +5,6 @@ const subscribeRoutes = express.Router();
 
 subscribeRoutes.post('/', createSubscribe);
 subscribeRoutes.get('/:id', unSubscribe);
-subscribeRoutes.post('/send_email', sendBlogPostPublishedEmail);
+subscribeRoutes.post('/notify', sendBlogPostPublishedEmail);
 
 export default subscribeRoutes;

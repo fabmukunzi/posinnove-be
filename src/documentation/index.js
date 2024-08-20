@@ -3,9 +3,9 @@ import projectPaths from './project.docs';
 import welcomeRouteDocs from './welcome.docs';
 import authenticationPaths from './auth.docs';
 import userPaths from './user.docs';
-import projectCategoryPaths from './projectCategory.docs';  // Added projectCategories
-
+import projectCategoryPaths from './projectCategory.docs';
 import profilePaths from './profile.docs';
+import subscribePaths from './subscribe.docs';  // Add this line
 
 export default {
     ...basicInfo,
@@ -15,8 +15,7 @@ export default {
         ...authenticationPaths,
         ...userPaths,
         ...profilePaths,
-        ...projectCategoryPaths
-     
+        ...projectCategoryPaths,
+        ...subscribePaths  
     },
-  };
-  
+};
