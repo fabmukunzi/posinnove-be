@@ -54,31 +54,31 @@ const subscribePaths = {
         }
       }
     },
-    "/api/subscribe/{id}": {
-      delete: {
-        summary: "Unsubscribe a user",
-        tags: ["Subscriptions"],
-        parameters: [
-          {
-            in: "path",
-            name: "id",
-            required: true,
-            schema: {
-              type: "string",
-              format: "uuid"
-            }
-          }
-        ],
-        responses: {
-          '200': {
-            description: "Subscription cancelled successfully"
-          },
-          '500': {
-            description: "Internal server error"
-          }
-        }
-      }
-    },
+    // "/api/subscribe/{id}": {
+    //   delete: {
+    //     summary: "Unsubscribe a user",
+    //     tags: ["Subscriptions"],
+    //     parameters: [
+    //       {
+    //         in: "path",
+    //         name: "id",
+    //         required: true,
+    //         schema: {
+    //           type: "string",
+    //           format: "uuid"
+    //         }
+    //       }
+    //     ],
+    //     responses: {
+    //       '200': {
+    //         description: "Subscription cancelled successfully"
+    //       },
+    //       '500': {
+    //         description: "Internal server error"
+    //       }
+    //     }
+    //   }
+    // },
     "/api/subscribe/notify": {
       post: {
         summary: "Send notification email for new blog post",
