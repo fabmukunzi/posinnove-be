@@ -60,7 +60,19 @@ export const createSubscribe = async (req, res) => {
 export const unSubscribe = async (req, res) => {
     const { id } = req.params;
     try {
-        const deletedSubscribe = await Subscribe.destroy({ where: { id } });
+       
+        const subscription = await Subscribe.findByPk(id);
+        
+        if (!subscription) {
+            return res.status(404).json({
+                status: "error",
+                message: "Subscription not found",
+            });
+        }
+
+       
+        await subscription.destroy();
+
         return res.status(200).json({
             status: "success",
             message: "Subscription cancelled successfully",
@@ -73,7 +85,6 @@ export const unSubscribe = async (req, res) => {
         });
     }
 }
-
 export const sendBlogPostPublishedEmail = async (req, res) => {
     try {
         const { title, summary, postId } = req.body; 
@@ -113,6 +124,7 @@ export const sendBlogPostPublishedEmail = async (req, res) => {
                             <body>
                                 <div class="container">
                                     <h2>New Blog Post: ${title}</h2>
+                                     <p>Dear ${subscriber.names}</p>
                                     <p>${summary}</p>
                                     <p><a class="post-link" href="${process.env.baseURL}/blog/${postId}">Read More</a></p>
                                     <p class="unsubscribe-link">
