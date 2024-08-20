@@ -16,7 +16,17 @@ import Project from './database/models/project.model.js';
 import associateModels from './database/models/associateModels.js';
 import Enrollment from './database/models/enrollement.model.js';
 import subscribeRoutes from './routes/subscribe.routes.js';
+dotenv.config();
 
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const app = express();
 const models = { User, projectCategory, Project,Enrollment };
