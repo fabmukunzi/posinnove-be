@@ -3,7 +3,7 @@ import session from 'express-session';
 import passport from './googleAuth/passport.google';  // Import the passport configuration
 import userRoutes from './routes/user.routes';
 import projectRoutes from './routes/project.routes';
-import projectCategory from './routes/projectCategory.routes';
+import projectCategoryRoutes from './routes/projectCategory.routes';
 import docs from './documentation';
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
@@ -17,7 +17,7 @@ import associateModels from './database/models/associateModels.js';
 import Enrollment from './database/models/enrollement.model.js';
 import subscribeRoutes from './routes/subscribe.routes.js';
 dotenv.config();
-
+const app = express();
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -28,7 +28,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-const app = express();
+
 const models = { User, projectCategory, Project,Enrollment };
 associateModels(models);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(docs));
