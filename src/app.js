@@ -21,7 +21,7 @@ import subscribeRoutes from './routes/subscribe.routes.js';
 const app = express();
 const models = { User, projectCategory, Project,Enrollment };
 associateModels(models);
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(docs));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(docs));
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
