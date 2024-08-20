@@ -10,19 +10,18 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 
-dotenv.config();
+import User from './database/models/user.model.js';
+import projectCategory from './database/models/projectCategory.model.js';
+import Project from './database/models/project.model.js';
+import associateModels from './database/models/associateModels.js';
+import Enrollment from './database/models/enrollement.model.js';
+import subscribeRoutes from './routes/subscribe.routes.js';
+
 
 const app = express();
-
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
+const models = { User, projectCategory, Project,Enrollment };
+associateModels(models);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(docs));
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
@@ -32,9 +31,9 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/users', userRoutes);
-app.use('/api/categories', projectCategory);
-app.use("/api/projects", projectRoutes);
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(docs));
+app.use('/api/categories', projectCategoryRoutes);
+app.use("/api/projects",projectRoutes)
+app.use('/api/subscribe',subscribeRoutes)
 
 // Google OAuth routes
 app.get('/auth/google',

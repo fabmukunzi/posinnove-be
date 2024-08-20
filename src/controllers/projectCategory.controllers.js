@@ -24,14 +24,14 @@ export const createProjectCategory = async (req, res) => {
     }
 };
 
-export const getProjectCategories = async (req, res) => {  // Changed from getCourseCategories to getProjectCategories
+export const getProjectCategories = async (req, res) => {  
     try {
-        const allCategories = await ProjectCategoryService.getProjectCategories();  // Changed from getCourseCategories to getProjectCategories
+        const allCategories = await ProjectCategoryService.getProjectCategories();  
         res.status(200).json({
             status: "success",
             message: "Project categories retrieved successfully",
             data: {
-                projectCategories: allCategories,  // Changed from courseCategories to projectCategories
+                projectCategories: allCategories,  
             },
         });
     } catch (error) {
@@ -43,15 +43,15 @@ export const getProjectCategories = async (req, res) => {  // Changed from getCo
     }
 };
 
-export const getProjectCategoryById = async (req, res) => {  // Changed from getCourseCategoryById to getProjectCategoryById
+export const getProjectCategoryById = async (req, res) => {  
     const { id } = req.params;
     try {
-        const projectCategory = await ProjectCategoryService.getProjectCategoryById(id);  // Changed from getCourseCategoryById to getProjectCategoryById
+        const projectCategory = await ProjectCategoryService.getProjectCategoryById(id);  
         res.status(200).json({
             status: "success",
             message: "Project category retrieved successfully",
             data: {
-                projectCategory: projectCategory,  // Changed from courseCategory to projectCategory
+                projectCategory: projectCategory,  
             },
         });
     } catch (error) {
@@ -63,22 +63,22 @@ export const getProjectCategoryById = async (req, res) => {  // Changed from get
     }
 };
 
-export const updateProjectCategory = async (req, res) => {  // Changed from updateCourseCategory to updateProjectCategory
+export const updateProjectCategory = async (req, res) => {  
     const { id } = req.params;
-    const { projectCategory, description } = req.body;  // Changed from courseCategory to projectCategory
+    const { projectCategory, description } = req.body;  
     try {
         const updatedCategory = {
             projectCategory,
             description
         };
         
-        const updatedProjectCategory = await ProjectCategoryService.updateProjectCategory(id, updatedCategory);  // Changed from updateCourseCategory to updateProjectCategory
+        const updatedProjectCategory = await ProjectCategoryService.updateProjectCategory(id, updatedCategory);  
         
         res.status(200).json({
             status: "success",
             message: "Project category updated successfully",
             data: {
-                projectCategory: updatedProjectCategory,  // Changed from courseCategory to projectCategory
+                projectCategory: updatedProjectCategory, 
             },
         });
     } catch (error) {
@@ -90,10 +90,10 @@ export const updateProjectCategory = async (req, res) => {  // Changed from upda
     }
 };
 
-export const deleteProjectCategory = async (req, res) => {  // Changed from deleteCourseCategory to deleteProjectCategory
+export const deleteProjectCategory = async (req, res) => {  
     const { id } = req.params;
     try {
-        const deletedCategory = await ProjectCategoryService.deleteProjectCategory(id);  // Changed from deleteCourseCategory to deleteProjectCategory
+        const deletedCategory = await ProjectCategoryService.deleteProjectCategory(id);  
         res.status(200).json({
             status: "success",
             message: "Project category deleted successfully",
