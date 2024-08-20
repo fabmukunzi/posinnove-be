@@ -15,6 +15,7 @@ import projectCategory from './database/models/projectCategory.model.js';
 import Project from './database/models/project.model.js';
 import associateModels from './database/models/associateModels.js';
 import Enrollment from './database/models/enrollement.model.js';
+import subscribeRoutes from './routes/subscribe.routes.js';
 
 
 const app = express();
@@ -28,6 +29,7 @@ app.get('/', (req, res) => { return res.status(200).json({ message: 'welcome to 
 app.use('/api/users', userRoutes);
 app.use('/api/categories', projectCategoryRoutes);
 app.use("/api/projects",projectRoutes)
+app.use('/api/subscribe',subscribeRoutes)
 
 
 

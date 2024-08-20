@@ -45,7 +45,11 @@ export const createProject = async (req, res) => {
 
       return res.status(201).json(project);
     } catch (error) {
-      return res.status(500).json({ error: 'Failed to create project' });
+      console.log(error);
+      return res.status(500).json({ 
+        message: 'Failed to create project',
+        error: error.message
+       });
     }
   });
 };
