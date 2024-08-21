@@ -115,3 +115,20 @@ catch (error) {
      });
   }
 }
+
+// middleware requirePassword
+export const requirePassword = (req, res, next) => {
+  const { password, provider } = req.body;
+
+  // If the provider is 'google' or another third-party, skip password requirement
+  if (provider && ['google', 'facebook', 'twitter'].includes(provider.toLowerCase())) {
+    return next();
+  }
+
+  // If no provider is specified or it's a regular signup, check for password
+  if (!password || password.trim() === '') {
+    return res.status(400).json({ error: 'Password is required for non-OAuth users.' });
+  }
+
+  next();
+};

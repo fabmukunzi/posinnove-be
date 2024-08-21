@@ -11,7 +11,10 @@ import { updateProfileSchema } from '../validations/user.updateProfile.validatio
 
 export const userSignup = async (req, res) => {
   const { firstName, lastName, password, email, gender, role } = req.body;
-  const hashedPassword = await hashPassword(password);
+  let hashedPassword = null;
+  if (!provider || !['google', 'facebook', 'twitter'].includes(provider.toLowerCase())) {
+    hashedPassword = await hashPassword(password);
+  }
 
   try {
     const user = {

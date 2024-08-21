@@ -16,7 +16,7 @@ passport.use(new GoogleStrategy({
       let user = await UserService.getUserByEmail(profile.emails[0].value);
 
       if (!user) {
-        user = await UserService.createUser({
+        user = await UserService.register({
           email: profile.emails[0].value,
           firstName: profile.name.givenName,
           lastName: profile.name.familyName,
@@ -30,13 +30,14 @@ passport.use(new GoogleStrategy({
           country: '',
           About: '',
           phone: '',
+          password: 'google-oauth', 
+          provider: 'google',
         });
+        
       } 
-      // If the user already exists, skip updating their profile
-      // Generate a JWT token if you're using JWT for session management
+      
       const token = generateToken({ id: user.id, email: user.email });
 
-      // Pass the user and token to the done callback
       return done(null, { user, token });
     } catch (error) {
       return done(error, null);

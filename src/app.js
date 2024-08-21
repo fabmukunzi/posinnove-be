@@ -1,6 +1,6 @@
 import express from 'express';
 import session from 'express-session';
-import passport from './googleAuth/passport.google';  // Import the passport configuration
+import passport from './thirdParties/passport.google.js';  // Import the passport configuration
 import userRoutes from './routes/user.routes';
 import projectRoutes from './routes/project.routes';
 import projectCategoryRoutes from './routes/projectCategory.routes';
@@ -20,7 +20,7 @@ dotenv.config();
 const app = express();
 
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.APISECRET,
     resave: false,
     saveUninitialized: true
 }));
