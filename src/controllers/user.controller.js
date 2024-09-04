@@ -1,13 +1,12 @@
-import { generateToken } from "../utils/token.generator";
-import { hashPassword } from "../utils/password.utils";
-import { UserService } from "../services/user.service";
-import User from "../database/models/user.model"
-import sendEmail from "../utils/sendMail";
+import { generateToken } from '../utils/token.generator';
+import { hashPassword } from '../utils/password.utils';
+import { UserService } from '../services/user.service';
+import User from '../database/models/user.model';
+import sendEmail from '../utils/sendMail';
 import jwt from 'jsonwebtoken';
 import { retryUpload } from '../helpers/retryUpload';
 import fs from 'fs';
 import { updateProfileSchema } from '../validations/user.updateProfile.validation';
-
 
 export const userSignup = async (req, res) => {
   const { firstName, lastName, password, email, gender, role } = req.body;
@@ -23,10 +22,13 @@ export const userSignup = async (req, res) => {
       role,
     };
     const createdUser = await UserService.register(user);
-    const token = generateToken({ id: createdUser.id, email: createdUser.email });
-  await sendEmail({
+    const token = generateToken({
+      id: createdUser.id,
+      email: createdUser.email,
+    });
+    await sendEmail({
       to: email,
-      subject: "Posinnove Verification",
+      subject: 'Posinnove Verification',
       body: `
         <html>
           <head>
@@ -61,7 +63,7 @@ export const userSignup = async (req, res) => {
       `,
     });
     res.status(201).json({
-      message: "User created successfully, check your email to verify Account",
+      message: 'User created successfully, check your email to verify Account',
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -82,20 +84,20 @@ export const verifyAccount = async (req, res) => {
       const updatedUser = await user.update({ verified: true });
       if (updatedUser) {
         res.status(201).json({
-          status: "success",
-          message: "Account verified please login to continue",
+          status: 'success',
+          message: 'Account verified please login to continue',
         });
       }
     } else {
       res.status(400).json({
-        status: "fail",
-        message: "Verification failed",
-        });
+        status: 'fail',
+        message: 'Verification failed',
+      });
     }
   } catch (error) {
-    res.status(400).json({ 
-      status: "fail",
-      message: "Invalid token" ,
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid token',
       error: error.message,
     });
   }
@@ -106,13 +108,13 @@ export const userLogin = async (req, res) => {
     const user = req.user;
     const token = generateToken(user);
     res.status(200).json({
-      message: "Successfully logged in",
+      message: 'Successfully logged in',
       data: { token },
     });
   } catch (error) {
     res.status(500).json({
       error: error.message,
-      message: "Something went wrong, Try again",
+      message: 'Something went wrong, Try again',
     });
   }
 };
@@ -121,7 +123,7 @@ export const getAllUsers = async (req, res) => {
   try {
     const users = await UserService.getAllUsers();
     res.status(200).json({
-      message: "Users fetched successfully",
+      message: 'Users fetched successfully',
       users,
     });
   } catch (error) {
@@ -133,9 +135,9 @@ export const getAllUsers = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   try {
-    const user = await UserService.getUserById(req.user.id)
+    const user = await UserService.getUserById(req.user.id);
     res.status(200).json({
-      message: "Profile fetched successfully",
+      message: 'Profile fetched successfully',
       data: user,
     });
   } catch (error) {
@@ -151,8 +153,8 @@ export const singleUser = async (req, res) => {
     const user = await UserService.getUserById(id);
     if (!user) {
       return res.status(404).json({
-        status: "fail",
-        message: "User not found",
+        status: 'fail',
+        message: 'User not found',
       });
     }
     const createUserDataResponse = (user) => ({
@@ -167,7 +169,7 @@ export const singleUser = async (req, res) => {
     });
     const responseData = createUserDataResponse(user);
     res.status(200).json({
-      message: "User fetched successfully",
+      message: 'User fetched successfully',
       data: responseData,
     });
   } catch (error) {
@@ -189,16 +191,16 @@ export const changeAccountStatus = async (req, res) => {
     let emailSubject;
     let activationReason;
     if (user.active) {
-      emailSubject = "Account Enabled";
-      activationReason = "You are allowed to login again";
+      emailSubject = 'Account Enabled';
+      activationReason = 'You are allowed to login again';
     } else {
-      emailSubject = "Account Disabled";
+      emailSubject = 'Account Disabled';
       activationReason = reasonDeactivated;
     }
 
     const emailBody = `
       <p>User account with this email ${user.email} has been ${
-      user.active ? "enabled" : "disabled"
+      user.active ? 'enabled' : 'disabled'
     }.</p>
       <p>Reason: ${activationReason}</p>
     `;
@@ -209,10 +211,10 @@ export const changeAccountStatus = async (req, res) => {
     });
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       message: user.active
-        ? "User account successfully enabled"
-        : "User account successfully disabled",
+        ? 'User account successfully enabled'
+        : 'User account successfully disabled',
       reasonDeactivated: user.reasonDeactivated,
     });
   } catch (error) {
@@ -220,104 +222,107 @@ export const changeAccountStatus = async (req, res) => {
   }
 };
 
-
 export const forgetPassword = async (req, res) => {
   try {
     const { email } = req.body;
     if (!email) {
       return res.status(400).json({
-        status: "fail",
-        message: "Please enter your email"
+        status: 'fail',
+        message: 'Please enter your email',
       });
     }
 
     const user = await UserService.getUserByEmail(email);
     if (!user) {
       return res.status(404).json({
-        status: "fail",
-        message: "User not found"
+        status: 'fail',
+        message: 'User not found',
       });
     }
-    const resetToken = generateToken(user,'10min');
+    const resetToken = generateToken(user, '10min');
     sendEmail({
       to: email,
-      subject: "Posinnove ResetPassword",
+      subject: 'Posinnove ResetPassword',
       body: `
         <html>
-          <head>
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-              }
-              .container {
-                max-width: 600px;
-                margin: 0 auto;
-                padding: 20px;
-              }
-              .verification-link {
-                color: #007bff;
-                text-decoration: none;
-              }
-              .verification-link:hover {
-                text-decoration: underline;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <h2>Posinnove Account Verification</h2>
-              <p>Please click the following link to verify your Posinnove account:</p>
-              <p><a class="verification-link" href=${process.env.FRONT_END_URL}/resetPassword/${resetToken}>Verify Email</a></p>
-              <p>If you didn't create an account with Posinnove, you can safely ignore this email.</p>
-            </div>
-          </body>
-        </html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .reset-link {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .reset-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Reset Your Posinnove Account Password</h2>
+      <p>We received a request to reset the password associated with this email address. If you made this request, please click the link below to reset your password:</p>
+      <p><a class="reset-link" href="${process.env.FRONT_END_URL}/resetPassword/${resetToken}">Reset Your Password</a></p>
+      <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
+      <p>Thank you,<br/>The Posinnove Team</p>
+    </div>
+  </body>
+</html>
+
       `,
     });
     res.status(200).json({
-      status: "success",
-      message: " sent successfully"
+      status: 'success',
+      message: ' sent successfully',
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      message: error.message || "Internal Server Error"
+      message: error.message || 'Internal Server Error',
     });
   }
 };
 
-export const resetPassword=async(req, res) => {
+export const resetPassword = async (req, res) => {
   const token = req.params.token;
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const userId = decodedToken.id;
 
   const user = await User.findOne({
-    where: { id: userId},
+    where: { id: userId },
   });
-  if(!user){
+  if (!user) {
     return res.status(404).json({
-      status: "fail",
-      message: "Invalid or expired token"
+      status: 'fail',
+      message: 'Invalid or expired token',
     });
   }
   const { password } = req.body;
-   const hashedPassword=await hashPassword(password)
+  const hashedPassword = await hashPassword(password);
 
-  user.password=hashedPassword;
+  user.password = hashedPassword;
   await user.save();
 
   return res.status(200).json({
-    status: "success",
-    message: "Password reset successfully"
+    status: 'success',
+    message: 'Password reset successfully',
   });
-}
+};
 
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
 
     // Validate the request body using Joi
-    const { error, value: updates } = updateProfileSchema.validate(req.body, { abortEarly: false });
+    const { error, value: updates } = updateProfileSchema.validate(req.body, {
+      abortEarly: false,
+    });
 
     if (error && !req.file) {
       return res.status(400).json({
