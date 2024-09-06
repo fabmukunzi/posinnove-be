@@ -49,4 +49,22 @@ export class ProjectService {
       ]
     });
   }
+
+  static async getProjectsByCategory(projectCategoryId) {
+    return await Project.findAll({
+      where: { projectCategoryId },
+      include: [
+        {
+          model: User,
+          as: 'projectAuthor',
+          attributes: ['firstName', 'lastName', 'email']
+        },
+        {
+          model: ProjectCategory,
+          as: 'category',
+          attributes: ['id', 'projectCategory']
+        }
+      ]
+    });
+  }
 }

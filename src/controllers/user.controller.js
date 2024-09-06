@@ -10,7 +10,7 @@ import { updateProfileSchema } from '../validations/user.updateProfile.validatio
 
 
 export const userSignup = async (req, res) => {
-  const { firstName, lastName, password, email, gender, role } = req.body;
+  const { firstName, lastName, password, email, gender, role, provider } = req.body;
   let hashedPassword = null;
   if (!provider || !['google', 'facebook', 'twitter'].includes(provider.toLowerCase())) {
     hashedPassword = await hashPassword(password);
@@ -24,10 +24,11 @@ export const userSignup = async (req, res) => {
       email,
       gender,
       role,
+      provider,
     };
     const createdUser = await UserService.register(user);
     const token = generateToken({ id: createdUser.id, email: createdUser.email });
-  await sendEmail({
+    await sendEmail({
       to: email,
       subject: "Posinnove Verification",
       body: `

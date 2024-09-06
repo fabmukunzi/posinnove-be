@@ -1,6 +1,7 @@
 import { ProjectService } from '../services/project.services';
-import { retryUpload } from '../helpers/retryUpload'; // Import the retry upload function
-import { uploadMiddleware } from '../middlewares/uploadMiddleware'; // Import the upload middleware
+import { retryUpload } from '../helpers/retryUpload';
+import { uploadMiddleware } from '../middlewares/uploadMiddleware';
+import {updateProjectSchema} from '../validations/project.update';
 
 export const createProject = async (req, res) => {
   uploadMiddleware(req, res, async (err) => {
@@ -89,6 +90,33 @@ export const getOneProject = async (req, res) => {
   }
 };
 
+export const getProjectsByCategory = async (req, res) => {
+  const { projectCategoryId } = req.params;
+
+  try {
+    const projects = await ProjectService.getProjectsByCategory(projectCategoryId);
+    if (!projects || projects.length === 0) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'No projects found for the specified category',
+      });
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Projects retrieved successfully',
+      data: { projects },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      message: 'Internal server error',
+      error: error.message,
+    });
+  }
+};
+
+
 export const deleteProject = async (req, res) => {
   const { id } = req.params;
   try {
@@ -104,4 +132,83 @@ export const deleteProject = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+export const updateProject = async (req, res) => {
+  const { id } = req.params;
+
+  // Validate incoming data using the custom schema that allows partial updates
+  const { error, value: updates } = updateProjectSchema.validate(req.body, { abortEarly: false });
+
+  if (error) {
+    return res.status(400).json({
+      status: 'fail',
+      message: error.details.map((detail) => detail.message),
+    });
+  }
+
+  uploadMiddleware(req, res, async (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to handle file upload' });
+    }
+
+    try {
+      const loggedUser = req.user;
+      const author = loggedUser.id;
+
+      // Retrieve the existing project to ensure it exists and to preserve any unchanged fields
+      const existingProject = await ProjectService.getProjectById(id);
+      if (!existingProject) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      // Handle file uploads if any
+      let coverImageUrl = existingProject.coverImage;
+      let uploadsUrls = existingProject.uploads;
+
+      if (req.files && req.files['coverImage']) {
+        const coverImageFile = req.files['coverImage'][0];
+        coverImageUrl = await retryUpload(coverImageFile.path, 'coverImages');
+      }
+
+      if (req.files && req.files['uploads']) {
+        uploadsUrls = await Promise.all(
+          req.files['uploads'].map(async (file) => {
+            const uploadUrl = await retryUpload(file.path, 'uploads');
+            return uploadUrl;
+          })
+        );
+      }
+
+      // Prepare the updated project data (only updating fields that are provided)
+      const updatedProject = {
+        title: updates.title || existingProject.title,
+        projectCategoryId: updates.projectCategoryId || existingProject.projectCategoryId,
+        projectContent: updates.projectContent || existingProject.projectContent,
+        maxAttendances: updates.maxAttendances || existingProject.maxAttendances,
+        level: updates.level || existingProject.level,
+        deadline: updates.deadline || existingProject.deadline,
+        startDate: updates.startDate || existingProject.startDate,
+        coverImage: coverImageUrl,
+        uploads: uploadsUrls,
+        author, // Ensure the author is consistent
+      };
+
+      // Update the project in the database
+      await ProjectService.updateProject(id, updatedProject);
+
+      return res.status(200).json({
+        status: 'success',
+        message: 'Project updated successfully',
+        project: updatedProject
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        status: 'error',
+        message: 'Failed to update project',
+        error: error.message,
+      });
+    }
+  });
 };
