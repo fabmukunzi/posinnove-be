@@ -6,11 +6,19 @@ export class UserService {
   }
 
   static async getUserById(id) {
-    return await User.findOne({ where: { id: id },exclude:['password'] });
+    return await User.findOne({ where: { id: id }, attributes: { exclude: ['password'] } });
   }
 
   static async getUserByEmail(email) {
     return await User.findOne({ where: { email: email } });
+  }
+
+  static async getUserByResetToken(resetToken) {
+    return await User.findOne({ where: { resetToken: resetToken } });
+  }
+
+  static async updateUser(id, updates) {
+    return await User.update(updates, { where: { id: id } });
   }
 
   static async getAllUsers() {

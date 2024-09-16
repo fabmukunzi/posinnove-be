@@ -257,10 +257,12 @@ export const forgetPassword = async (req, res) => {
         message: "User not found"
       });
     }
-    const resetToken = generateToken(user,'10min');
+
+    const resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '10m' });
+
     sendEmail({
       to: email,
-      subject: "Posinnove ResetPassword",
+      subject: "Posinnove Reset Password",
       body: `
         <html>
           <head>
@@ -284,10 +286,10 @@ export const forgetPassword = async (req, res) => {
           </head>
           <body>
             <div class="container">
-              <h2>Posinnove Account Verification</h2>
-              <p>Please click the following link to verify your Posinnove account:</p>
-              <p><a class="verification-link" href=${process.env.baseURL}/api/users/resetPassword/${resetToken}>Verify Email</a></p>
-              <p>If you didn't create an account with Posinnove, you can safely ignore this email.</p>
+              <h2>Posinnove Reset Password</h2>
+              <p>Please click the following link to reset your password:</p>
+              <p><a class="verification-link" href=${process.env.baseURL}/resetPassword/${resetToken}>Reset Password</a></p>
+              <p>If you didn't request a password reset, you can safely ignore this email.</p>
             </div>
           </body>
         </html>
@@ -295,7 +297,7 @@ export const forgetPassword = async (req, res) => {
     });
     res.status(200).json({
       status: "success",
-      message: " sent successfully"
+      message: "Email sent successfully"
     });
   } catch (error) {
     res.status(500).json({
@@ -305,33 +307,59 @@ export const forgetPassword = async (req, res) => {
   }
 };
 
-export const resetPassword=async(req, res) => {
-  const token = req.params.token;
-  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const userId = decodedToken.id;
+export const resetPassword = async (req, res) => {
+  try {
+    const token = req.params.token;
 
-  const user = await User.findOne({
-    where: { id: userId},
-  });
-  console.log(userId);
-  console.log('=======================');
-  if(!user){
-    return res.status(404).json({
-      status: "fail",
-      message: "Inavlid or expired token"
+    // Verify token and decode it
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        // Handle token expiration or invalid token
+        return res.status(400).json({
+          status: 'fail',
+          message: 'Invalid or expired token'
+        });
+      }
+      return decoded;
+    });
+
+    const userId = decodedToken.id;
+
+    // Find the user by the decoded ID
+    const user = await UserService.getUserById(userId);
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User not found'
+      });
+    }
+
+    // Validate new password input
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Password is required'
+      });
+    }
+
+    // Hash the new password and update user record
+    const hashedPassword = await hashPassword(password);
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Password reset successfully'
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: 'error',
+      message: error.message || 'Internal Server Error'
     });
   }
-  const { password } = req.body;
-   const hashedPassword=await hashPassword(password)
-
-  user.password=hashedPassword;
-  await user.save();
-
-  return res.status(200).json({
-    status: "success",
-    message: "Password reset successfully"
-  });
-}
+};
 
 export const updateProfile = async (req, res) => {
   try {
