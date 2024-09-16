@@ -5,7 +5,8 @@ import authenticationPaths from './auth.docs';
 import userPaths from './user.docs';
 import projectCategoryPaths from './projectCategory.docs';
 import profilePaths from './profile.docs';
-import subscribePaths from './subscribe.docs';  // Add this line
+import subscribePaths from './subscribe.docs';
+import interestPaths from './interests.docs';
 
 export default {
     ...basicInfo,
@@ -16,6 +17,7 @@ export default {
         ...userPaths,
         ...profilePaths,
         ...projectCategoryPaths,
-        ...subscribePaths  
+        ...subscribePaths,
+        ...interestPaths
     },
 };

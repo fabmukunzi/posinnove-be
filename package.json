@@ -9,7 +9,7 @@
     "dev": "nodemon --exec npx babel-node server",
     "start": "node index.js",
     "migrate": "sequelize db:migrate",
-    "migrate:undo": "sequelize db:migrate:undo",
+    "demigrate": "sequelize db:migrate:undo",
     "seed": "sequelize db:seed:all",
     "seed:undo": "sequelize db:seed:undo:all"
   },

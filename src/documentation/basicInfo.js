@@ -25,6 +25,10 @@ const basicInfo = {
         description: "APIs for managing Authentication"
       },
       {
+        name: "Interests",
+        description: "APIs for managing user interests"
+      },
+      {
         name: "Profile",
         description: "APIs for managing Profile"
       },
