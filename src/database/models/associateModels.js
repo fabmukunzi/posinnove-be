@@ -21,6 +21,6 @@ export default function associateModels(models) {
 
     //interests users relationship
 
-    Interest.belongsTo(User,{foreignKey:"userId", as: 'userIntersts'})
+    Interest.belongsTo(User, { foreignKey: "userId", as: 'userInterests' });
    
   }
