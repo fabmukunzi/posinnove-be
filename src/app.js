@@ -1,8 +1,9 @@
 import express from 'express';
 import session from 'express-session';
-import passport from './thirdParties/passport.google.js';  // Import the passport configuration
+import passport from './thirdParties/passport.google.js';  
 import userRoutes from './routes/user.routes';
 import projectRoutes from './routes/project.routes';
+import InterestRoutes from './routes/interest.routes.js'
 import projectCategoryRoutes from './routes/projectCategory.routes';
 import docs from './documentation';
 import swaggerUi from 'swagger-ui-express';
@@ -16,6 +17,7 @@ import Project from './database/models/project.model.js';
 import associateModels from './database/models/associateModels.js';
 import Enrollment from './database/models/enrollement.model.js';
 import subscribeRoutes from './routes/subscribe.routes.js';
+import Interest from './database/models/interests.model.js';
 dotenv.config();
 const app = express();
 
@@ -29,7 +31,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-const models = { User, projectCategory, Project,Enrollment };
+const models = { User, projectCategory, Project,Enrollment ,Interest};
 associateModels(models);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(docs));
 app.use(cors());
@@ -42,8 +44,9 @@ app.get('/', (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/categories', projectCategoryRoutes);
-app.use("/api/projects",projectRoutes)
-app.use('/api/subscribe',subscribeRoutes)
+app.use("/api/projects",projectRoutes);
+app.use('/api/subscribe',subscribeRoutes);
+app.use('/api/interests',InterestRoutes);
 
 // Google OAuth routes
 app.get('/auth/google',
@@ -53,7 +56,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    // Successful authentication, redirect to the client or another page.
+
     res.redirect('/profile');
   }
 );
