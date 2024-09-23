@@ -15,7 +15,9 @@ import projectCategory from './database/models/projectCategory.model.js';
 import Project from './database/models/project.model.js';
 import associateModels from './database/models/associateModels.js';
 import Enrollment from './database/models/enrollement.model.js';
+import Expertise from './database/models/expertise.model.js'
 import subscribeRoutes from './routes/subscribe.routes.js';
+import ExpertiseRoutes from './routes/expertise.routes.js'
 dotenv.config();
 const app = express();
 
@@ -29,7 +31,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-const models = { User, projectCategory, Project,Enrollment };
+const models = { User, projectCategory, Project,Enrollment,Expertise };
 associateModels(models);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(docs));
 app.use(cors());
@@ -44,6 +46,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/categories', projectCategoryRoutes);
 app.use("/api/projects",projectRoutes)
 app.use('/api/subscribe',subscribeRoutes)
+app.use('/api/expertises',ExpertiseRoutes);
 
 // Google OAuth routes
 app.get('/auth/google',
