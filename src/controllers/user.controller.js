@@ -9,8 +9,11 @@ import fs from 'fs';
 import { updateProfileSchema } from '../validations/user.updateProfile.validation';
 
 export const userSignup = async (req, res) => {
-  const { firstName, lastName, password, email, gender, role } = req.body;
-  const hashedPassword = await hashPassword(password);
+  const { firstName, lastName, password, email, gender, role, provider } = req.body;
+  let hashedPassword = null;
+  if (!provider || !['google', 'facebook', 'twitter'].includes(provider.toLowerCase())) {
+    hashedPassword = await hashPassword(password);
+  }
 
   try {
     const user = {
@@ -20,12 +23,10 @@ export const userSignup = async (req, res) => {
       email,
       gender,
       role,
+      provider,
     };
     const createdUser = await UserService.register(user);
-    const token = generateToken({
-      id: createdUser.id,
-      email: createdUser.email,
-    });
+    const token = generateToken({ id: createdUser.id, email: createdUser.email });
     await sendEmail({
       to: email,
       subject: 'Posinnove Verification',
@@ -74,30 +75,45 @@ export const verifyAccount = async (req, res) => {
   try {
     const token = req.params.token;
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decodedToken.id;
-    const email = decodedToken.email;
+    const { id: userId, email } = decodedToken;
+    
     const user = await User.findOne({
-      where: { id: userId, email: email, verified: false },
+      where: { id: userId, email: email },
     });
 
-    if (user && !user.verified) {
-      const updatedUser = await user.update({ verified: true });
-      if (updatedUser) {
-        res.status(201).json({
-          status: 'success',
-          message: 'Account verified please login to continue',
-        });
-      }
-    } else {
-      res.status(400).json({
-        status: 'fail',
-        message: 'Verification failed',
+    if (!user) {
+      return res.status(400).json({
+        status: "fail",
+        message: "User not found",
       });
     }
+
+    if (user.verified) {
+      return res.status(200).json({
+        status: "success",
+        message: "Account already verified. Please login to continue",
+      });
+    }
+
+    await user.update({ verified: true });
+
+    return res.status(200).json({
+      status: "success",
+      message: "Account verified. Please login to continue",
+    });
+
   } catch (error) {
-    res.status(400).json({
-      status: 'fail',
-      message: 'Invalid token',
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Invalid token",
+        error: error.message,
+      });
+    }
+    
+    return res.status(500).json({
+      status: "error",
+      message: "An unexpected error occurred",
       error: error.message,
     });
   }
@@ -186,7 +202,7 @@ export const changeAccountStatus = async (req, res) => {
     const user = await UserService.getUserById(id);
     user.active = !user.active;
     user.reasonDeactivated = reasonDeactivated;
-    await user.save();
+    await user.save();F
 
     let emailSubject;
     let activationReason;
@@ -290,29 +306,57 @@ export const forgetPassword = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-  const token = req.params.token;
-  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const userId = decodedToken.id;
+  try {
+    const token = req.params.token;
 
-  const user = await User.findOne({
-    where: { id: userId },
-  });
-  if (!user) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid or expired token',
+    // Verify token and decode it
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        // Handle token expiration or invalid token
+        return res.status(400).json({
+          status: 'fail',
+          message: 'Invalid or expired token'
+        });
+      }
+      return decoded;
+    });
+
+    const userId = decodedToken.id;
+
+    // Find the user by the decoded ID
+    const user = await UserService.getUserById(userId);
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User not found'
+      });
+    }
+
+    // Validate new password input
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Password is required'
+      });
+    }
+
+    // Hash the new password and update user record
+    const hashedPassword = await hashPassword(password);
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Password reset successfully'
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: 'error',
+      message: error.message || 'Internal Server Error'
     });
   }
-  const { password } = req.body;
-  const hashedPassword = await hashPassword(password);
-
-  user.password = hashedPassword;
-  await user.save();
-
-  return res.status(200).json({
-    status: 'success',
-    message: 'Password reset successfully',
-  });
 };
 
 export const updateProfile = async (req, res) => {

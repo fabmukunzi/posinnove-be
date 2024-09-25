@@ -16,6 +16,7 @@ import {
   restrictTo,
   isUserActive,
   isVerified,
+  requirePassword,
 } from '../middlewares/auth.middleware';
 import checkUserExistenceByEmail, {
   CheckLoginPassword,
@@ -31,7 +32,7 @@ const userRoutes = express.Router();
 userRoutes.get('/profile', protectRoute, getProfile);
 userRoutes.patch('/profile', protectRoute, upload.single('profileImage'), updateProfile);
 userRoutes.get('/verify-email/:token', verifyAccount);
-userRoutes.post('/signup', validateUser, checkUserExistenceByEmail, userSignup);
+userRoutes.post('/signup', requirePassword, validateUser, checkUserExistenceByEmail, userSignup);
 userRoutes.post(
   '/login',
   checkUserExistenceByEmail,

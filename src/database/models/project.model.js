@@ -1,4 +1,6 @@
 import { Sequelize, DataTypes } from 'sequelize';
+import projectCategory from './projectCategory.model';
+import User from './user.model';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -23,9 +25,13 @@ const Project = sequelize.define('projects', {
     type: DataTypes.UUID, 
     allowNull: false,
     references: {
-      model: 'ProjectCategory',
+      model: projectCategory,
       key: 'id',
     },
+     onUpdate: 'CASCADE',
+     onDelete: 'SET NULL',
+  
+  
   },
   coverImage: {
     type: DataTypes.STRING,
@@ -43,6 +49,13 @@ const Project = sequelize.define('projects', {
   author: {
     type: DataTypes.UUID,
     allowNull: false,
+    references: {
+      model: User,
+      key: 'id',
+    },
+     onUpdate: 'CASCADE',
+     onDelete: 'CASCADE'
+  
   },
   maxAttendances: {
     type: DataTypes.INTEGER,
