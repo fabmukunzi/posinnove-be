@@ -1,3 +1,6 @@
+import { config } from 'dotenv';
+
+config();
 const basicInfo = {
     openapi: "3.0.0",
     info: {
@@ -23,6 +26,10 @@ const basicInfo = {
       {
         name: "Authentication",
         description: "APIs for managing Authentication"
+      },
+      {
+        name: "Interests",
+        description: "APIs for managing user interests"
       },
       {
         name: "Profile",

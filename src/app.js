@@ -1,8 +1,9 @@
 import express from 'express';
 import session from 'express-session';
-import passport from './thirdParties/passport.google.js';  // Import the passport configuration
+import passport from './thirdParties/passport.google.js';  
 import userRoutes from './routes/user.routes';
 import projectRoutes from './routes/project.routes';
+import InterestRoutes from './routes/interest.routes.js'
 import projectCategoryRoutes from './routes/projectCategory.routes';
 import docs from './documentation';
 import swaggerUi from 'swagger-ui-express';
@@ -30,10 +31,20 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+const CSS_URL =
+  'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css';
 
 const models = { User, projectCategory, Project,Enrollment,Expertise };
 associateModels(models);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(docs));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(docs, {
+    customCss:
+      '.swagger-ui .opblock .opblock-summary-path-description-wrapper { align-items: center; display: flex; flex-wrap: wrap; gap: 0 10px; padding: 0 10px; width: 100%; }',
+    customCssUrl: CSS_URL,
+  })
+);
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
@@ -56,7 +67,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    // Successful authentication, redirect to the client or another page.
+
     res.redirect('/profile');
   }
 );
