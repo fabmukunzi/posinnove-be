@@ -16,8 +16,10 @@ import projectCategory from './database/models/projectCategory.model.js';
 import Project from './database/models/project.model.js';
 import associateModels from './database/models/associateModels.js';
 import Enrollment from './database/models/enrollement.model.js';
+import Expertise from './database/models/expertise.model.js'
 import subscribeRoutes from './routes/subscribe.routes.js';
 import Interest from './database/models/interests.model.js';
+import ExpertiseRoutes from './routes/expertise.routes.js'
 dotenv.config();
 const app = express();
 
@@ -33,7 +35,7 @@ app.use(passport.session());
 const CSS_URL =
   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css';
 
-const models = { User, projectCategory, Project,Enrollment ,Interest};
+const models = { User, projectCategory, Project,Enrollment,Interest,Expertise };
 associateModels(models);
 app.use(
   '/api-docs',
@@ -54,9 +56,10 @@ app.get('/', (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/categories', projectCategoryRoutes);
-app.use("/api/projects",projectRoutes);
-app.use('/api/subscribe',subscribeRoutes);
+app.use("/api/projects",projectRoutes)
+app.use('/api/subscribe',subscribeRoutes)
 app.use('/api/interests',InterestRoutes);
+app.use('/api/expertises',ExpertiseRoutes);
 
 // Google OAuth routes
 app.get('/auth/google',

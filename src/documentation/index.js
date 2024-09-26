@@ -7,6 +7,7 @@ import projectCategoryPaths from './projectCategory.docs';
 import profilePaths from './profile.docs';
 import subscribePaths from './subscribe.docs';
 import interestPaths from './interests.docs';
+import expertisePaths from './expertise.doc';
 
 export default {
     ...basicInfo,
@@ -18,6 +19,7 @@ export default {
         ...profilePaths,
         ...projectCategoryPaths,
         ...subscribePaths,
-        ...interestPaths
+        ...interestPaths,
+        ...expertisePaths
     },
 };
