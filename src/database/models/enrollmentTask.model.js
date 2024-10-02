@@ -1,12 +1,8 @@
 import { Sequelize, DataTypes } from 'sequelize';
+import { sequelize } from '../config/database.config.js';
 import Enrollment from './enrollement.model';
 import Task from './task.model';
 
-
-const sequelize = new Sequelize(process.env.DEV_DATABASE_URL, {
-  dialect: 'postgres',
-  logging: false,
-});
 
 const enrollmentTask = sequelize.define('enrollmentTask', {
   id: {

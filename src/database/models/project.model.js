@@ -1,13 +1,7 @@
 import { Sequelize, DataTypes } from 'sequelize';
+import { sequelize } from '../config/database.config.js';
 import projectCategory from './projectCategory.model';
 import User from './user.model';
-import dotenv from 'dotenv';
-dotenv.config();
-
-const sequelize = new Sequelize(process.env.DEV_DATABASE_URL, {
-  dialect: 'postgres',
-  logging: false,
-});
 
 const Project = sequelize.define('projects', {
   id: {

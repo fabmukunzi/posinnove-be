@@ -1,12 +1,8 @@
 import { Sequelize, DataTypes } from 'sequelize';
+import { sequelize } from '../config/database.config.js';
 import User from './user.model';
 import Project from './project.model.js';
-import ProjectCategory from './projectCategory.model.js';
 
-const sequelize = new Sequelize(process.env.DEV_DATABASE_URL, {
-  dialect: 'postgres',
-  logging: false,
-});
 
 // Define Enrollment model
 const Enrollment = sequelize.define('Enrollment', {

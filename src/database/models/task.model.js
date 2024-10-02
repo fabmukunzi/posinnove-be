@@ -1,12 +1,6 @@
 import { Sequelize, DataTypes } from 'sequelize';
+import { sequelize } from '../config/database.config.js';
 import Project from './project.model';
-
-
-const sequelize = new Sequelize(process.env.DEV_DATABASE_URL, {
-  dialect: 'postgres',
-  logging: false,
-});
-
 
 const Task = sequelize.define('Task', {
   id: {
