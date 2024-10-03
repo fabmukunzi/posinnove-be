@@ -194,6 +194,49 @@ export const singleUser = async (req, res) => {
     });
   }
 };
+
+export const getUserByUsername = async (req, res) => {
+  const username = req.query.username;
+  if (!username) {
+    return res.status(400).json({
+      status: 'fail',
+      error: 'Username is required',
+    });
+  }
+
+  try {
+    const user = await UserService.getUserByUserName(username);
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User Not Found',
+      });
+    }
+
+    const responseData = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      gender: user.gender,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      active: user.active,
+    };
+
+    res.status(200).json({
+      status: 'success',
+      message: 'User fetched successfully',
+      data: responseData,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      error: error.message,
+    });
+  }
+};
+
 export const changeAccountStatus = async (req, res) => {
   const { id } = req.params;
   const { reasonDeactivated } = req.body;

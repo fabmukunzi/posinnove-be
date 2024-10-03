@@ -9,6 +9,10 @@ export class UserService {
     return await User.findOne({ where: { id: id }, attributes: { exclude: ['password'] } });
   }
 
+  static async getUserByUserName(username) {
+    return await User.findOne({ where: { username: username }, attributes: { exclude: ['password'] } });
+  }
+
   static async getUserByEmail(email) {
     return await User.findOne({ where: { email: email } });
   }
