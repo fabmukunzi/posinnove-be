@@ -1,10 +1,6 @@
 import { Sequelize, DataTypes } from 'sequelize';
+import { sequelize } from '../config/database.config.js';
 import User from './user.model';
-
-const sequelize = new Sequelize(process.env.DEV_DATABASE_URL, {
-  dialect: 'postgres',
-  logging: false,
-});
 
 const Expertise = sequelize.define('Expertise', {
   id: {

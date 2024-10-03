@@ -1,43 +1,46 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.config.js';
-import User from './user.model';
-import Project from './project.model.js';
+import Project from './project.model';
 
-
-// Define Enrollment model
-const Enrollment = sequelize.define('Enrollment', {
+const Task = sequelize.define('Task', {
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4,
   },
-  userId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: User,
-      key: 'id',
-    },
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  },
   projectId: {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: Project,
-      key: 'id',
+        model: Project,
+        key: 'id',
     },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   },
-  enrollmentDate: {
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  coverImage: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  taskContent: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: Sequelize.NOW,
+  },
+  updatedAt: {
     type: DataTypes.DATE,
     defaultValue: Sequelize.NOW,
   },
 }, {
   timestamps: true,
-  tableName: 'enrollments',
+  tableName: 'tasks',
 });
 
-export default Enrollment;
+export default Task;

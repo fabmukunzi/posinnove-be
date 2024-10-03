@@ -20,6 +20,9 @@ import Expertise from './database/models/expertise.model.js'
 import subscribeRoutes from './routes/subscribe.routes.js';
 import Interest from './database/models/interests.model.js';
 import ExpertiseRoutes from './routes/expertise.routes.js'
+import Task from './database/models/task.model.js';
+import enrollmentTask from './database/models/enrollmentTask.model.js';
+
 dotenv.config();
 const app = express();
 
@@ -35,7 +38,7 @@ app.use(passport.session());
 const CSS_URL =
   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css';
 
-const models = { User, projectCategory, Project,Enrollment,Interest,Expertise };
+const models = { User, projectCategory, Project, Enrollment, Interest, Expertise, Task, enrollmentTask };
 associateModels(models);
 app.use(
   '/api-docs',

@@ -1,10 +1,5 @@
 import { Sequelize, DataTypes } from 'sequelize';
-
-
-const sequelize = new Sequelize(process.env.DEV_DATABASE_URL, {
-  dialect: 'postgres',
-  logging: false,
-});
+import { sequelize } from '../config/database.config.js';
 
 
 const Subscribe = sequelize.define('Subscribe', {
