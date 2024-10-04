@@ -37,7 +37,7 @@ const User = sequelize.define('User', {
   },
   role:{
     type:DataTypes.STRING,
-    defaultValue: 'student',   
+    defaultValue: 'Learner',   
   },
   createdAt: {
     type: DataTypes.DATE,

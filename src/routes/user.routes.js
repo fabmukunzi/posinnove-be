@@ -51,8 +51,7 @@ userRoutes.post(
   isVerified,
   userLogin
 );
-userRoutes.get('/', protectRoute, restrictTo('admin', 'teacher'), getAllUsers);
-userRoutes.get('/profiles', getUserByUsername);
+userRoutes.get('/', protectRoute, restrictTo('admin', 'Mentor'), getAllUsers);
 userRoutes.get('/:id', checkIfUserExistById, singleUser);
 userRoutes.patch(
   '/:id/status',

@@ -23,7 +23,7 @@ passport.use(new GoogleStrategy({
           googleId: profile.id,
           profileImage: profile.photos[0]?.value || null,
           gender: profile.gender || 'Not specified',
-          role: 'student',
+          role: 'Learner',
           active: true,
           verified: true,
           institution: '',
