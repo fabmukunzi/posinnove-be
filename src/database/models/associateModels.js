@@ -1,7 +1,7 @@
 // import Expertise from "./expertise.model";
 
 export default function associateModels(models) {
-  const { User, projectCategory, Project, Enrollment, Interest, Expertise, Task, enrollmentTask, Feedback } = models;
+  const { User, projectCategory, Project, Enrollment, Interest, Expertise, Task, enrollmentTask, Feedback, Review } = models;
 
   // User associations
   User.hasMany(Project, { foreignKey: 'author', as: 'authoredProjects' });
@@ -45,4 +45,10 @@ export default function associateModels(models) {
 
   enrollmentTask.hasMany(Feedback, { foreignKey: 'enrollmentTaskId', as: 'feedback_received' });
   Feedback.belongsTo(enrollmentTask, { foreignKey: 'enrollmentTaskId', as: 'task' });
+
+  // Review associations
+  Enrollment.hasOne(Review, { foreignKey: 'enrollmentId', as: 'review' });
+  Project.hasMany(Review, { foreignKey: 'projectId', as: 'reviews' });
+  Review.belongsTo(Enrollment, { foreignKey: 'enrollmentId', as: 'enrollment' });
+  Review.belongsTo(Project, { foreignKey: 'projectId', as: 'project' });
 }

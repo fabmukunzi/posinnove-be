@@ -11,9 +11,18 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import subscribeRoutes from './routes/subscribe.routes.js';
+<<<<<<< HEAD
 import ExpertiseRoutes from './routes/expertise.routes.js';
 
 import models from './database/models';
+=======
+import Interest from './database/models/interests.model.js';
+import ExpertiseRoutes from './routes/expertise.routes.js'
+import Task from './database/models/task.model.js';
+import enrollmentTask from './database/models/enrollmentTask.model.js';
+import Feedback from './database/models/feedback.model.js';
+import Review from './database/models/review.model.js';
+>>>>>>> c69573a (Implement project review design)
 
 dotenv.config();
 const app = express();
@@ -30,8 +39,13 @@ app.use(passport.session());
 const CSS_URL =
   'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css';
 
+<<<<<<< HEAD
 // const models = { User, projectCategory, Project, Enrollment, Interest, Expertise, Task, enrollmentTask };
 // associateModels(models);
+=======
+const models = { User, projectCategory, Project, Enrollment, Interest, Expertise, Task, enrollmentTask, Feedback, Review };
+associateModels(models);
+>>>>>>> c69573a (Implement project review design)
 app.use(
   '/api-docs',
   swaggerUi.serve,
