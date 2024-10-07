@@ -22,6 +22,7 @@ passport.use(new GoogleStrategy({
           lastName: profile.name.familyName,
           googleId: profile.id,
           profileImage: profile.photos[0]?.value || null,
+          userCoverImage: '',
           gender: profile.gender || 'Not specified',
           role: 'Learner',
           active: true,
@@ -30,6 +31,7 @@ passport.use(new GoogleStrategy({
           country: '',
           About: '',
           phone: '',
+          userBio: '',
           password: 'google-oauth', 
           provider: 'google',
         });

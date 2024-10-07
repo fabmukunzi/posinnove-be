@@ -25,13 +25,11 @@ import checkUserExistenceByEmail, {
 } from '../middlewares/user.middleware';
 import validateAccountStatusUpdate from '../validations/disableAccount.validation';
 import { verifyAccount } from '../controllers/user.controller';
-import createMulterInstance from '../helpers/multer';
-
-const upload = createMulterInstance('profileImages');
+import {uploadMiddleware} from '../middlewares/uploadMiddleware';
 
 const userRoutes = express.Router();
 userRoutes.get('/profile', protectRoute, getProfile);
-userRoutes.patch('/profile', protectRoute, upload.single('profileImage'), updateProfile);
+userRoutes.patch('/profile', protectRoute, uploadMiddleware, updateProfile);
 userRoutes.get('/verify-email/:token', verifyAccount);
 userRoutes.post('/signup', requirePassword, validateUser, checkUserExistenceByEmail, userSignup);
 userRoutes.post(
