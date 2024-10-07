@@ -2,6 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.config";
 import Project from "./project.model";
 import Enrollment from "./enrollement.model";
+import User from "./user.model";
 
 const Review = sequelize.define("Review", {
   id: {
@@ -26,6 +27,14 @@ const Review = sequelize.define("Review", {
       key: "id",
     },
   },
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: User,
+      key: "id",
+    },
+  },
   rating: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -37,15 +46,6 @@ const Review = sequelize.define("Review", {
   content: {
     type: DataTypes.TEXT,
     allowNull: false,
-  },
-  hoursSpent: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-  },
-  completionStatus: {
-    type: DataTypes.ENUM("completed", "partially_completed", "dropped"),
-    allowNull: false,
-    defaultValue: "completed",
   },
   isAnonymous: {
     type: DataTypes.BOOLEAN,

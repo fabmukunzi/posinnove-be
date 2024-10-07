@@ -48,7 +48,11 @@ export default function associateModels(models) {
 
   // Review associations
   Enrollment.hasOne(Review, { foreignKey: 'enrollmentId', as: 'review' });
-  Project.hasMany(Review, { foreignKey: 'projectId', as: 'reviews' });
   Review.belongsTo(Enrollment, { foreignKey: 'enrollmentId', as: 'enrollment' });
+
+  User.hasMany(Review, { foreignKey: 'userId', as: 'reviews' });
+  Review.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+  Project.hasMany(Review, { foreignKey: 'projectId', as: 'reviews' });
   Review.belongsTo(Project, { foreignKey: 'projectId', as: 'project' });
 }

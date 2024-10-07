@@ -26,6 +26,14 @@ module.exports = {
           key: "id",
         },
       },
+      userId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: "users",
+          key: "id",
+        },
+      },
       rating: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -33,15 +41,6 @@ module.exports = {
       content: {
         type: Sequelize.TEXT,
         allowNull: false,
-      },
-      hoursSpent: {
-        type: Sequelize.FLOAT,
-        allowNull: true,
-      },
-      completionStatus: {
-        type: Sequelize.ENUM("completed", "partially_completed", "dropped"),
-        allowNull: false,
-        defaultValue: "completed",
       },
       isAnonymous: {
         type: Sequelize.BOOLEAN,
