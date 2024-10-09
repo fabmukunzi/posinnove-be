@@ -31,9 +31,17 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
+      userCoverImage: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       gender: {
         type: Sequelize.STRING,
         allowNull: false
+      },
+      userBio:{
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       verified:{
         type: Sequelize.BOOLEAN,

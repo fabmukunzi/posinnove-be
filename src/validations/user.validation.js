@@ -28,9 +28,9 @@ const usersValidation = Joi.object({
     .optional()
     .messages({ 'string.min': 'Gender is required' }),
   role: Joi.string()
-    .valid('student', 'teacher')
+    .valid('Learner', 'Organization', 'Mentor')
     .required()
-    .messages({ 'any.only': 'Role must be either "teacher" or "student"' }),
+    .messages({ 'any.only': 'Role must be either "Learner" "Organization" or "Mentor"' }),
 });
 
 const validateUser = (req, res, next) => {

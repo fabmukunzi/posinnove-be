@@ -411,7 +411,7 @@ export const updateProfile = async (req, res) => {
       abortEarly: false,
     });
 
-    if (error && !req.file) {
+    if (error && (!req.files || (!req.files.profileImage && !req.files.userCoverImage))) {
       return res.status(400).json({
         status: 'fail',
         message: 'Validation error',
@@ -421,9 +421,9 @@ export const updateProfile = async (req, res) => {
 
     const user = await UserService.getUserById(userId);
 
-    // Handle profile image upload
-    if (req.file) {
-      const filePath = req.file.path;
+    // Handle profileImage upload
+    if (req.files && req.files.profileImage) {
+      const filePath = req.files.profileImage[0].path;
       const folder = 'profileImages';
       try {
         const profileImageUrl = await retryUpload(filePath, folder);
@@ -432,7 +432,7 @@ export const updateProfile = async (req, res) => {
         // Remove the file from the local server
         fs.unlinkSync(filePath);
       } catch (error) {
-        console.error('Error uploading file to Cloudinary:', error);
+        console.error('Error uploading profile image to Cloudinary:', error);
         return res.status(500).json({
           status: 'error',
           message: 'Error uploading profile image',
@@ -440,15 +440,34 @@ export const updateProfile = async (req, res) => {
       }
     }
 
-    //hashing password if updated
+    // Handle userCoverImage upload
+    if (req.files && req.files.userCoverImage) {
+      const filePath = req.files.userCoverImage[0].path;
+      const folder = 'coverImages';
+      try {
+        const coverImageUrl = await retryUpload(filePath, folder);
+        updates.userCoverImage = coverImageUrl;
+
+        // Remove the file from the local server
+        fs.unlinkSync(filePath);
+      } catch (error) {
+        console.error('Error uploading cover image to Cloudinary:', error);
+        return res.status(500).json({
+          status: 'error',
+          message: 'Error uploading cover image',
+        });
+      }
+    }
+
+    // Hash password if updated
     if (updates.password) {
       updates.password = await hashPassword(updates.password);
     }
 
-    // Update user fields with the new values
+    // Update user with the new values, including userBio and other fields
     await User.update(updates, { where: { id: userId } });
 
-    // fields needed in response
+    // Fetch updated user data, excluding password
     const responseData = await User.findOne({
       where: { id: userId },
       attributes: {
