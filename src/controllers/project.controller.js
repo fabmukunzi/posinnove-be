@@ -44,7 +44,11 @@ export const createProject = async (req, res) => {
 
       const project = await ProjectService.createProject(newProject);
 
-      return res.status(201).json(project);
+      return res.status(201).json({
+        status: 'success',
+        message: 'Project created successfully',
+        data: { project },
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ 
@@ -137,7 +141,6 @@ export const deleteProject = async (req, res) => {
 export const updateProject = async (req, res) => {
   const { id } = req.params;
 
-  // Validate incoming data using the custom schema that allows partial updates
   const { error, value: updates } = updateProjectSchema.validate(req.body, { abortEarly: false });
 
   if (error) {
@@ -156,13 +159,11 @@ export const updateProject = async (req, res) => {
       const loggedUser = req.user;
       const author = loggedUser.id;
 
-      // Retrieve the existing project to ensure it exists and to preserve any unchanged fields
       const existingProject = await ProjectService.getProjectById(id);
       if (!existingProject) {
         return res.status(404).json({ error: 'Project not found' });
       }
 
-      // Handle file uploads if any
       let coverImageUrl = existingProject.coverImage;
       let uploadsUrls = existingProject.uploads;
 
@@ -180,7 +181,6 @@ export const updateProject = async (req, res) => {
         );
       }
 
-      // Prepare the updated project data (only updating fields that are provided)
       const updatedProject = {
         title: updates.title || existingProject.title,
         projectCategoryId: updates.projectCategoryId || existingProject.projectCategoryId,
@@ -191,7 +191,7 @@ export const updateProject = async (req, res) => {
         startDate: updates.startDate || existingProject.startDate,
         coverImage: coverImageUrl,
         uploads: uploadsUrls,
-        author, // Ensure the author is consistent
+        author,
       };
 
       // Update the project in the database
@@ -200,7 +200,7 @@ export const updateProject = async (req, res) => {
       return res.status(200).json({
         status: 'success',
         message: 'Project updated successfully',
-        project: updatedProject
+        project: updatedProject,
       });
     } catch (error) {
       console.log(error);

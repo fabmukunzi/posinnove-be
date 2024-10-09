@@ -1,7 +1,7 @@
 // import Expertise from "./expertise.model";
 
 export default function associateModels(models) {
-  const { User, projectCategory, Project, Enrollment, Expertise } = models;
+  const { User, projectCategory, Project, Enrollment, Interest, Expertise, Task, enrollmentTask } = models;
 
   // User associations
   User.hasMany(Project, { foreignKey: 'author', as: 'authoredProjects' });
@@ -12,6 +12,7 @@ export default function associateModels(models) {
   Project.belongsTo(User, { foreignKey: 'author', as: 'projectAuthor' });
   Project.belongsTo(projectCategory, { foreignKey: 'projectCategoryId', as: 'category' });
   Project.hasMany(Enrollment, { foreignKey: 'projectId', as: 'enrollments' });
+  User.hasMany(Interest, { foreignKey: 'userId', as: 'userInterests' });
 
   // ProjectCategory associations
   projectCategory.hasMany(Project, { foreignKey: 'projectCategoryId', as: 'projects' });
@@ -20,6 +21,18 @@ export default function associateModels(models) {
   Enrollment.belongsTo(User, { foreignKey: 'userId', as: 'enrolledUser' });
   Enrollment.belongsTo(Project, { foreignKey: 'projectId', as: 'project' }); 
 
+  //interests users relationship
+
+  Interest.belongsTo(User, { foreignKey: "userId", as: 'userInterests' });
+
   // Expertise users relationship
   Expertise.belongsTo(User, { foreignKey: "userId", as: 'userExpertises' });
+
+  // Task associations
+  Project.hasMany(Task, { foreignKey: 'projectId', as: 'tasks' });
+  Task.belongsTo(Project, { foreignKey: 'projectId', as: 'project' });
+
+  // EnrollmentTask associations many to many
+  Enrollment.belongsToMany(Task, { through: enrollmentTask, foreignKey: 'enrollmentId', as: 'tasks' });
+  Task.belongsToMany(Enrollment, { through: enrollmentTask, foreignKey: 'taskId', as: 'enrollments' });
 }

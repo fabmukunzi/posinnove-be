@@ -184,6 +184,95 @@ const projectPaths = {
         }
       }
     },
+    patch: {
+      summary: 'Update an existing project',
+      tags: ['Project'],
+      security: [{ Bearer: [] }],
+      parameters: [
+        {
+          in: 'path',
+          name: 'id',
+          required: true,
+          schema: {
+            type: 'string'
+          },
+          description: 'Project ID'
+        }
+      ],
+      requestBody: {
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                title: { type: 'string' },
+                projectCategoryId: { type: 'string' },
+                projectContent: { type: 'string' },
+                maxAttendances: { type: 'integer' },
+                level: { type: 'string' },
+                deadline: { type: 'string', format: 'date-time' },
+                startDate: { type: 'string', format: 'date-time' }
+              },
+            }
+          },
+          'multipart/form-data': {
+            schema: {
+              type: 'object',
+              properties: {
+                coverImage: { type: 'string', format: 'binary' },
+                uploads: {
+                  type: 'array',
+                  items: { type: 'string', format: 'binary' }
+                }
+              }
+            }
+          }
+        }
+      },
+      responses: {
+        '200': {
+          description: 'Project updated successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: { type: 'string' },
+                  message: { type: 'string' },
+                  project: {
+                    type: 'object',
+                    properties: {
+                      title: { type: 'string' },
+                      projectCategoryId: { type: 'string' },
+                      projectContent: { type: 'string' },
+                      maxAttendances: { type: 'integer' },
+                      level: { type: 'string' },
+                      deadline: { type: 'string', format: 'date-time' },
+                      startDate: { type: 'string', format: 'date-time' },
+                      coverImage: { type: 'string' },
+                      uploads: {
+                        type: 'array',
+                        items: { type: 'string' }
+                      },
+                      author: { type: 'string' }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        '400': {
+          description: 'Bad request'
+        },
+        '404': {
+          description: 'Project not found'
+        },
+        '500': {
+          description: 'Internal server error'
+        }
+      }
+    },
     delete: {
       summary: 'Delete a project',
       tags: ['Project'],

@@ -7,7 +7,8 @@ import {
   forgetPassword,
   resetPassword,
   getProfile,
-  updateProfile
+  updateProfile,
+  getUserByUsername
 } from '../controllers/user.controller';
 import express from 'express';
 import validateUser from '../validations/user.validation';
@@ -51,6 +52,7 @@ userRoutes.post(
   userLogin
 );
 userRoutes.get('/', protectRoute, restrictTo('admin', 'teacher'), getAllUsers);
+userRoutes.get('/profiles', getUserByUsername);
 userRoutes.get('/:id', checkIfUserExistById, singleUser);
 userRoutes.patch(
   '/:id/status',
@@ -59,4 +61,5 @@ userRoutes.patch(
   validateAccountStatusUpdate,
   changeAccountStatus
 );
+
 export default userRoutes;

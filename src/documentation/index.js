@@ -6,6 +6,7 @@ import userPaths from './user.docs';
 import projectCategoryPaths from './projectCategory.docs';
 import profilePaths from './profile.docs';
 import subscribePaths from './subscribe.docs';
+import interestPaths from './interests.docs';
 import expertisePaths from './expertise.doc';
 
 export default {
@@ -18,6 +19,7 @@ export default {
         ...profilePaths,
         ...projectCategoryPaths,
         ...subscribePaths,
+        ...interestPaths,
         ...expertisePaths
     },
 };
