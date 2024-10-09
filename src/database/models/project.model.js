@@ -3,7 +3,7 @@ import { sequelize } from '../config/database.config.js';
 import projectCategory from './projectCategory.model';
 import User from './user.model';
 
-const Project = sequelize.define('projects', {
+const Project = sequelize.define('Project', {
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
