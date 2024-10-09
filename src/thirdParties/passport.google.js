@@ -24,7 +24,7 @@ passport.use(new GoogleStrategy({
           profileImage: profile.photos[0]?.value || null,
           userCoverImage: '',
           gender: profile.gender || 'Not specified',
-          role: 'Learner',
+          role: 'learner',
           active: true,
           verified: true,
           institution: '',

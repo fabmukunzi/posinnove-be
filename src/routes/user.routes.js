@@ -49,7 +49,7 @@ userRoutes.post(
   isVerified,
   userLogin
 );
-userRoutes.get('/', protectRoute, restrictTo('admin', 'Mentor'), getAllUsers);
+userRoutes.get('/', protectRoute, restrictTo('admin', 'mentor'), getAllUsers);
 userRoutes.get('/:id', checkIfUserExistById, singleUser);
 userRoutes.patch(
   '/:id/status',
