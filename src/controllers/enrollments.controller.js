@@ -71,7 +71,7 @@ export const getSingleEnrollment = async (req, res) => {
             })
         }
 
-        if (enrollmentData.userId !== userId || req.user.role !== admin) {
+        if (enrollmentData.userId !== userId || req.user.role !== 'admin') {
             return res.status(401).json({
                 message: 'You are not authorized to view this enrollment'
             })

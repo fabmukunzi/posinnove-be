@@ -1,5 +1,5 @@
 const enrollmentPaths = {
-    'api/enrollments': {
+    '/api/enrollments': {
         post: {
             summary: 'Add a new enrollment for a user',
             tags: ['Enrollments'],
@@ -127,7 +127,7 @@ const enrollmentPaths = {
         },
     },
 
-    'api/enrollments/{id}': {
+    '/api/enrollments/{id}': {
         get: {
             summary: 'Get a specific enrollment',
             tags: ['Enrollments'],

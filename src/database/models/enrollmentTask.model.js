@@ -61,6 +61,7 @@ const enrollmentTask = sequelize.define('enrollmentTask', {
   },
 }, {
   timestamps: true,
+  paranoid: true,
   tableName: 'enrollment_tasks',
 });
 

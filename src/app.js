@@ -23,6 +23,8 @@ import ExpertiseRoutes from './routes/expertise.routes.js'
 import Task from './database/models/task.model.js';
 import enrollmentTask from './database/models/enrollmentTask.model.js';
 import EnrollmentRoutes from './routes/enrollments.routes.js';
+import EnrollmentTasksRoutes from './routes/enrollmentTasks.routes.js';
+import TasksRoutes from './routes/tasks.routes.js';
 
 dotenv.config();
 const app = express();
@@ -65,6 +67,8 @@ app.use('/api/subscribe',subscribeRoutes)
 app.use('/api/interests',InterestRoutes);
 app.use('/api/expertises',ExpertiseRoutes);
 app.use('/api/enrollments', EnrollmentRoutes);
+app.use('/api/enrollment-tasks', EnrollmentTasksRoutes);
+app.use('/api/tasks', TasksRoutes);
 
 // Google OAuth routes
 app.get('/auth/google',
