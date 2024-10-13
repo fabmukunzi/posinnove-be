@@ -31,11 +31,12 @@ const profilePaths = {
                 username: { type: "string" },
                 email: { type: "string" },
                 profileImage: { type: "string", format: "binary" },
+                userCoverImage: { type: "string", format: "binary" },
                 gender: { type: "string" },
-                role: { type: "string" },
                 institution: { type: "string" },
                 country: { type: "string" },
                 About: { type: "string" },
+                userBio: { type: "string" },
                 phone: { type: "string" },
               },
             },
@@ -61,11 +62,13 @@ const profilePaths = {
                       username: { type: "string" },
                       email: { type: "string" },
                       profileImage: { type: "string" },
+                      userCoverImage: { type: "string" },
                       gender: { type: "string" },
                       role: { type: "string" },
                       institution: { type: "string" },
                       country: { type: "string" },
                       About: { type: "string" },
+                      userBio: { type: "string" },
                       phone: { type: "string" },
                     },
                   },
@@ -74,11 +77,11 @@ const profilePaths = {
             },
           },
         },
-      },  
-      '500': {
-        description: 'Internal server error'
+        '500': {
+          description: 'Internal server error',
+        },
       },
-    },
+    },    
   },
 };
 
