@@ -75,7 +75,7 @@ module.exports = {
         allowNull: true
       },
       userBio: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true
       },
       phone: {
