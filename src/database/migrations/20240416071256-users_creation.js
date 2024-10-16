@@ -39,13 +39,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      userBio: {
+      role: {
         type: Sequelize.STRING,
-        allowNull: true
-      },
-      verified:{
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+        allowNull: false,
+        defaultValue: 'learner'
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -55,7 +52,36 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         onUpdate: Sequelize.literal('CURRENT_TIMESTAMP')
-      }
+      },
+      active: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+      },
+      verified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      institution: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      country: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      About: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      userBio: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      phone: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
