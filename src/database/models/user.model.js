@@ -69,7 +69,7 @@ const User = sequelize.define('User', {
     allowNull: true,
   },
   About:{
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true,
   },
   userBio:{

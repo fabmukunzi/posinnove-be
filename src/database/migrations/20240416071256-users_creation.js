@@ -71,7 +71,7 @@ module.exports = {
         allowNull: true
       },
       About: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true
       },
       userBio: {
