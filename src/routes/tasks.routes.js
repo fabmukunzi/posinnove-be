@@ -8,6 +8,6 @@ const TasksRoutes = express.Router();
 
 TasksRoutes.get('/', protectRoute, restrictTo('admin', 'instructor'), getAllTasks);
 TasksRoutes.get('/:id', protectRoute, getSingleTask);
-TasksRoutes.post('/', protectRoute, createTask);
+TasksRoutes.post('/', protectRoute, restrictTo('admin', 'instructor'), createTask);
 
 export default TasksRoutes;
