@@ -31,13 +31,17 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  userCoverImage: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   gender: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   role:{
     type:DataTypes.STRING,
-    defaultValue: 'student',   
+    defaultValue: 'learner',   
   },
   createdAt: {
     type: DataTypes.DATE,
@@ -65,7 +69,11 @@ const User = sequelize.define('User', {
     allowNull: true,
   },
   About:{
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  userBio:{
+    type: DataTypes.TEXT,
     allowNull: true,
   },
   phone:{

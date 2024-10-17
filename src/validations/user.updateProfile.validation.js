@@ -8,6 +8,7 @@ export const updateProfileSchema = Joi.object({
   institution: Joi.string().optional(),
   country: Joi.string().optional(),
   About: Joi.string().optional(),
+  userBio: Joi.string().optional(),
   phone: Joi.string().optional(),
   password: Joi.string()
   .pattern(
@@ -21,4 +22,4 @@ export const updateProfileSchema = Joi.object({
       'Password must contain at least one lowercase letter, one uppercase letter, one digit, one special character, and be at least 8 characters long.',
   }),
   // Ensure at least one field is present
-}).or('firstName', 'lastName', 'username', 'gender', 'institution', 'country', 'About', 'phone', 'password');
+}).or('firstName', 'lastName', 'username', 'gender', 'institution', 'country', 'About', 'userBio', 'phone', 'password');
