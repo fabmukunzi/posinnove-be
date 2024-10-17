@@ -6,7 +6,7 @@ import { createNewEnrollment, deleteEnrollment, getAllEnrollments, getSingleEnro
 const EnrollmentRoutes = express.Router();
 
 EnrollmentRoutes.post('/', protectRoute, createNewEnrollment);
-EnrollmentRoutes.get('/', protectRoute, restrictTo('admin', 'teacher'), getAllEnrollments);
+EnrollmentRoutes.get('/', protectRoute, restrictTo('admin', 'instructor'), getAllEnrollments);
 EnrollmentRoutes.get('/:id', protectRoute, getSingleEnrollment);
 EnrollmentRoutes.delete('/:id', protectRoute, deleteEnrollment);
 

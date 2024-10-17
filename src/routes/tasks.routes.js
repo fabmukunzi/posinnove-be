@@ -6,7 +6,7 @@ import { createTask, getAllTasks, getSingleTask } from '../controllers/tasks.con
 const TasksRoutes = express.Router();
 
 
-TasksRoutes.get('/', protectRoute, restrictTo('admin', 'tutor'), getAllTasks);
+TasksRoutes.get('/', protectRoute, restrictTo('admin', 'instructor'), getAllTasks);
 TasksRoutes.get('/:id', protectRoute, getSingleTask);
 TasksRoutes.post('/', protectRoute, createTask);
 
