@@ -12,6 +12,7 @@ module.exports = {
         password: 'password123',
         email: 'john@example.com',
         profileImage: 'profile.jpg',
+        userCoverImage: 'coverImage.jpg',
         gender: 'Male',
         createdAt: new Date(),
         updatedAt: new Date()
@@ -24,6 +25,7 @@ module.exports = {
         password: 'password456',
         email: 'jane@example.com',
         profileImage: 'profile.jpg',
+        userCoverImage: 'coverImage.jpg',
         gender: 'male',
         createdAt: new Date(),
         updatedAt: new Date()
