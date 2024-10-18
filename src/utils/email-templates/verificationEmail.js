@@ -1,11 +1,23 @@
+import {
+  Body,
+  Button,
+  Container,
+  Head,
+  Hr,
+  Html,
+  Img,
+  Preview,
+  Section,
+  Text,
+} from '@react-email/components';
+import * as React from 'react';
 
 const baseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : '';
 
-// eslint-disable-next-line no-unused-vars
 export const KoalaWelcomeEmail = ({ userFirstname }) => (
-  `<Html>
+  <Html>
     <Head />
     <Preview>
       The sales intelligence platform that helps you uncover qualified leads.
@@ -13,7 +25,7 @@ export const KoalaWelcomeEmail = ({ userFirstname }) => (
     <Body style={main}>
       <Container style={container}>
         <Img
-          src={${baseUrl}/static/koala-logo.png}
+          src={`${baseUrl}/static/koala-logo.png`}
           width="170"
           height="50"
           alt="Koala"
@@ -40,7 +52,7 @@ export const KoalaWelcomeEmail = ({ userFirstname }) => (
         </Text>
       </Container>
     </Body>
-  </Html>`
+  </Html>
 );
 
 KoalaWelcomeEmail.PreviewProps = {
@@ -48,7 +60,6 @@ KoalaWelcomeEmail.PreviewProps = {
 };
 
 export default KoalaWelcomeEmail;
-
 
 const main = {
   backgroundColor: '#ffffff',

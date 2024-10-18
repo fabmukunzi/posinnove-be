@@ -1,10 +1,5 @@
 {
-  "semi": true,
-  "singleQuote": false,
-  "trailingComma": "none",
-  "endOfLine": "auto",
-  "curly": "all",
-  "eqeqeq": "always",
-  "no-trailing-spaces": "error"
+  "singleQuote": true,
+  "semi": false,
+  "trailingComma": "all"
 }
-

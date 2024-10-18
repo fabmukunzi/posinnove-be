@@ -1,4 +1,4 @@
-import projectCategory from "../database/models/projectCategory.model";
+import projectCategory from "../database/models/projectCategory.model"; 
 
 export class ProjectCategoryService { 
     static async getProjectCategories() { 
@@ -14,7 +14,6 @@ export class ProjectCategoryService {
     }
 
     static async updateProjectCategory(id, updatedProjectCategory) {
-        // eslint-disable-next-line no-useless-catch
         try {
             const [rowsUpdated, [updatedCategory]] = await projectCategory.update(updatedProjectCategory, {
                 where: { id: id },

@@ -10,12 +10,6 @@
     "start": "node index.js",
     "migrate": "sequelize db:migrate",
     "demigrate": "sequelize db:migrate:undo",
-    "prettier": "eslint \"src/**/*.{js,css,html,json,md}\"",
-    "lint:staged": "lint-staged",
-    "lint:fix": "eslint --fix --ext .js .",
-    "prettier:fix": "prettier --write \"src/**/*.{js,css,html,json,md}\"",
-    "prettier:check": "prettier \"src/**/*.{js,css,html,json,md}\"",
-    "prepare": "husky install",
     "seed": "sequelize db:seed:all",
     "seed:undo": "sequelize db:seed:undo:all",
     "lint": "eslint"

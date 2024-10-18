@@ -1,7 +1,9 @@
 {
   // config related to code formatting
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   "[javascript]": {
+    "editor.formatOnSave": false,
     "editor.defaultFormatter": null
   },
   "javascript.validate.enable": false, //disable all built-in syntax checking
@@ -10,10 +12,5 @@
     "source.fixAll.tslint": "explicit",
     "source.organizeImports": "explicit"
   },
-  "eslint.alwaysShowStatus": true,
-  "editor.formatOnSave": false,
-  "cSpell.words": [
-    "Clickup",
-    "demigrate"
-  ]
+  "eslint.alwaysShowStatus": true
 }

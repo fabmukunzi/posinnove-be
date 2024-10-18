@@ -1,30 +1,31 @@
-import express from 'express';
 import {
+  userSignup,
+  userLogin,
+  getAllUsers,
+  singleUser,
   changeAccountStatus,
   forgetPassword,
-  getAllUsers,
-  getProfile,
   resetPassword,
-  singleUser,
+  getProfile,
   updateProfile,
-  userLogin,
-  userSignup,
-  verifyAccount
+  getUserByUsername
 } from '../controllers/user.controller';
+import express from 'express';
+import validateUser from '../validations/user.validation';
 import {
+  protectRoute,
+  restrictTo,
   isUserActive,
   isVerified,
-  protectRoute,
   requirePassword,
-  restrictTo,
 } from '../middlewares/auth.middleware';
-import { uploadMiddleware } from '../middlewares/uploadMiddleware';
 import checkUserExistenceByEmail, {
   CheckLoginPassword,
   checkIfUserExistById,
 } from '../middlewares/user.middleware';
 import validateAccountStatusUpdate from '../validations/disableAccount.validation';
-import validateUser from '../validations/user.validation';
+import { verifyAccount } from '../controllers/user.controller';
+import {uploadMiddleware} from '../middlewares/uploadMiddleware';
 
 const userRoutes = express.Router();
 userRoutes.get('/profile', protectRoute, getProfile);
