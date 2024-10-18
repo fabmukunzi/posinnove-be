@@ -106,3 +106,4 @@ export const deleteProjectCategory = async (req, res) => {
         });
     }
 };
+

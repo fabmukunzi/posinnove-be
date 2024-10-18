@@ -32,6 +32,7 @@ module.exports = {
         allowNull: true
       },
       userCoverImage: {
+        // eslint-disable-next-line no-undef
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -40,6 +41,7 @@ module.exports = {
         allowNull: false
       },
       userBio:{
+        // eslint-disable-next-line no-undef
         type: DataTypes.STRING,
         allowNull: true,
       },
