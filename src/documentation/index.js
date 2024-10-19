@@ -8,6 +8,9 @@ import profilePaths from './profile.docs';
 import subscribePaths from './subscribe.docs';
 import interestPaths from './interests.docs';
 import expertisePaths from './expertise.doc';
+import enrollmentTasksPaths from './enrollmentTasks.docs';
+import enrollmentPaths from './enrollments.docs';
+import taskPaths from './tasks.docs';
 
 export default {
     ...basicInfo,
@@ -20,6 +23,9 @@ export default {
         ...projectCategoryPaths,
         ...subscribePaths,
         ...interestPaths,
-        ...expertisePaths
+        ...expertisePaths,
+        ...enrollmentTasksPaths,
+        ...enrollmentPaths,
+        ...taskPaths
     },
 };
