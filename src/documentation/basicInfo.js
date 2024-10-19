@@ -46,7 +46,18 @@ const basicInfo = {
         name: "Project",
         description: "APIs for managing Projects"
       },
-      
+      {
+        name: "Enrollments",
+        description: "APIs for managing Enrollments"
+      },
+      {
+        name: "Enrollment Tasks",
+        description: "APIs for managing Enrollment Tasks"
+      },
+      {
+        name: "Tasks",
+        description: 'APIs for managging Tasks'
+      }   
     ],
     components: {
         securitySchemes: {

@@ -37,6 +37,7 @@ const Enrollment = sequelize.define('Enrollment', {
   },
 }, {
   timestamps: true,
+  paranoid: true,
   tableName: 'enrollments',
 });
 

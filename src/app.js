@@ -11,7 +11,13 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import subscribeRoutes from './routes/subscribe.routes.js';
-import ExpertiseRoutes from './routes/expertise.routes.js';
+import Interest from './database/models/interests.model.js';
+import ExpertiseRoutes from './routes/expertise.routes.js'
+import Task from './database/models/task.model.js';
+import enrollmentTask from './database/models/enrollmentTask.model.js';
+import EnrollmentRoutes from './routes/enrollments.routes.js';
+import EnrollmentTasksRoutes from './routes/enrollmentTasks.routes.js';
+import TasksRoutes from './routes/tasks.routes.js';
 
 import models from './database/models';
 
@@ -59,6 +65,9 @@ app.use("/api/projects",projectRoutes)
 app.use('/api/subscribe',subscribeRoutes)
 app.use('/api/interests',InterestRoutes);
 app.use('/api/expertises',ExpertiseRoutes);
+app.use('/api/enrollments', EnrollmentRoutes);
+app.use('/api/enrollment-tasks', EnrollmentTasksRoutes);
+app.use('/api/tasks', TasksRoutes);
 
 // Google OAuth routes
 app.get('/auth/google',
