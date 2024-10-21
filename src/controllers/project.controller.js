@@ -2,6 +2,7 @@ import { ProjectService } from '../services/project.services';
 import { retryUpload } from '../helpers/retryUpload';
 import { uploadMiddleware } from '../middlewares/uploadMiddleware';
 import {updateProjectSchema} from '../validations/project.update';
+import { handleInternalServerError } from '../utils/errorHandlers';
 
 export const createProject = async (req, res) => {
   uploadMiddleware(req, res, async (err) => {
@@ -68,29 +69,22 @@ export const getAllProjects = async (req, res) => {
       data: { projects: allProjects },
     });
   } catch (error) {
-    return res.status(500).json({
-      status: 'error',
-      message: 'Internal server error',
-      error: error.message,
-    });
+    return handleInternalServerError(res, error);
   }
 };
 
 export const getOneProject = async (req, res) => {
-  const { id } = req.params;
+  const project = req.project;
+
   try {
-    const project = await ProjectService.getProjectById(id);
+    const projectData = project;
     return res.status(200).json({
       status: 'success',
       message: 'Project retrieved successfully',
-      data: { project },
+      data: projectData,
     });
   } catch (error) {
-    return res.status(500).json({
-      status: 'error',
-      message: 'Internal server error',
-      error: error.message,
-    });
+    return handleInternalServerError(res, error);
   }
 };
 
@@ -112,11 +106,7 @@ export const getProjectsByCategory = async (req, res) => {
       data: { projects },
     });
   } catch (error) {
-    return res.status(500).json({
-      status: 'error',
-      message: 'Internal server error',
-      error: error.message,
-    });
+    return handleInternalServerError(res, error);
   }
 };
 
@@ -130,11 +120,7 @@ export const deleteProject = async (req, res) => {
       message: 'Project deleted successfully',
     });
   } catch (error) {
-    return res.status(500).json({
-      status: 'error',
-      message: 'Internal server error',
-      error: error.message,
-    });
+    return handleInternalServerError(res, error);
   }
 };
 
@@ -204,11 +190,7 @@ export const updateProject = async (req, res) => {
       });
     } catch (error) {
       console.log(error);
-      return res.status(500).json({
-        status: 'error',
-        message: 'Failed to update project',
-        error: error.message,
-      });
+      return handleInternalServerError(res, error);
     }
   });
 };

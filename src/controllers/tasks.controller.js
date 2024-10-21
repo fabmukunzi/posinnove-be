@@ -2,21 +2,6 @@ import { retryUpload } from "../helpers/retryUpload";
 import { uploadMiddleware } from "../middlewares/uploadMiddleware";
 import { TaskService } from "../services/tasks.services";
 import { handleBadRequest, handleInternalServerError, handleNotFound } from "../utils/errorHandlers"
-import fs from 'fs'
-
-export const getAllTasks = async (req, res) => {
-    try {
-        const allTasks = await TaskService.getAllTasks();
-
-        return res.status(200).json({
-            status: 'success',
-            message: 'Tasks fetched successfully',
-            data: allTasks
-        })
-    } catch (error) {
-        return handleInternalServerError(res, error);
-    }
-}
 
 export const getSingleTask = async (req, res) => {
     const { id } = req.params;

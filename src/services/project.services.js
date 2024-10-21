@@ -1,6 +1,8 @@
 import Project from '../database/models/project.model';
 import User from '../database/models/user.model';
 import ProjectCategory from '../database/models/projectCategory.model';
+import Task from '../database/models/task.model';
+import Enrollment from '../database/models/enrollement.model';
 
 export class ProjectService {
   static async getProjectById(id) {
@@ -67,4 +69,51 @@ export class ProjectService {
       ]
     });
   }
+
+  static async getProjectWithTasks(projectId) {
+    return await Project.findOne({
+      where: { id: projectId },
+      include: [
+        {
+          model: User,
+          as: 'projectAuthor',
+          attributes: ['firstName', 'lastName', 'email']
+        },
+        {
+          model: ProjectCategory,
+          as: 'category',
+          attributes: ['id', 'projectCategory']
+        },
+        {
+          model: Task,
+          as: 'tasks',
+          attributes: ['id', 'title', 'taskContent', 'coverImage']
+        }
+      ]
+    });
+  }
+
+  static async getProjectWithTasksAndEnrollments(projectId) {
+    return await Project.findOne({
+        where: { id: projectId },
+        include: [
+            {
+                model: Task,
+                as: 'tasks',
+                attributes: ['id', 'title', 'taskContent', 'coverImage']
+            },
+            {
+                model: Enrollment,
+                as: 'enrollments',
+                include: [
+                    {
+                        model: User,
+                        as: 'enrolledUser',
+                        attributes: ['id', 'firstName', 'lastName', 'email']
+                    }
+                ]
+            }
+        ]
+    });
+}
 }
