@@ -298,8 +298,8 @@ export const forgetPassword = async (req, res) => {
         message: 'User not found',
       });
     }
-    const resetToken = generateToken(user, '10min');
-    sendEmail({
+    const resetToken = generateToken(user, '2h');
+    await sendEmail({
       to: email,
       subject: 'Posinnove ResetPassword',
       body: `
@@ -327,7 +327,7 @@ export const forgetPassword = async (req, res) => {
     <div class="container">
       <h2>Reset Your Posinnove Account Password</h2>
       <p>We received a request to reset the password associated with this email address. If you made this request, please click the link below to reset your password:</p>
-      <p><a class="reset-link" href="${process.env.FRONT_END_URL}/resetPassword/${resetToken}">Reset Your Password</a></p>
+      <p><a class="reset-link" href="${process.env.baseURL}/resetPassword/${resetToken}">Reset Your Password</a></p>
       <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
       <p>Thank you,<br/>The Posinnove Team</p>
     </div>
@@ -338,7 +338,7 @@ export const forgetPassword = async (req, res) => {
     });
     res.status(200).json({
       status: 'success',
-      message: ' sent successfully',
+      message: 'Verification email sent successfully',
     });
   } catch (error) {
     res.status(500).json({
@@ -350,7 +350,7 @@ export const forgetPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
-    const token = req.params.token;
+    const token = req.params;
 
     // Verify token and decode it
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {

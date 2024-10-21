@@ -47,7 +47,11 @@ app.use(
     customCssUrl: CSS_URL,
   })
 );
-app.use(cors());
+const corsOptions = {
+  origin: '*', 
+  optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
 
