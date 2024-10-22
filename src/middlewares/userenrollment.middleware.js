@@ -4,7 +4,7 @@ import Enrollment from "../database/models/enrollement.model";
 
 export const checkEnrollmentStatus = async (req, res, next) => {
     const user = req.user;
-    const { projectId } = req.params;
+    const { id: projectId } = req.params;
 
     try {
         const enrollment = await Enrollment.findOne({
@@ -12,27 +12,27 @@ export const checkEnrollmentStatus = async (req, res, next) => {
         });
 
         if (enrollment) {
-            if (user.role === 'instructor' || user.role === 'admin') {
-                const projectWithTasksAndEnrollments = await ProjectService.getProjectWithTasksAndEnrollments(projectId);
-                if (handleNotFound(res, { 'Project with Tasks and Enrollments': projectWithTasksAndEnrollments })) return next();
-
-                req.project = projectWithTasksAndEnrollments;
-                return next();
-            }
-
             const projectWithTasks = await ProjectService.getProjectWithTasks(projectId);
-            if (handleNotFound(res, { 'Project with Tasks': projectWithTasks })) return next();
+            if (handleNotFound(res, { 'Project with Tasks': projectWithTasks })) return;
 
             req.project = projectWithTasks;
             return next();
         }
 
+        if (user.role === 'instructor' || user.role === 'admin') {
+            const projectWithTasksAndEnrollments = await ProjectService.getProjectWithTasksAndEnrollments(projectId);
+            if (handleNotFound(res, { 'Project with Tasks and Enrollments': projectWithTasksAndEnrollments })) return;
+
+            req.project = projectWithTasksAndEnrollments;
+            return next();
+        }
+
         const projectWithoutTasks = await ProjectService.getProjectById(projectId);
-        if (handleNotFound(res, { 'Project without Tasks': projectWithoutTasks })) return next();
+        if (handleNotFound(res, { 'Project without Tasks': projectWithoutTasks })) return;
 
         req.project = projectWithoutTasks;
-        return next();
 
+        next();
     } catch (error) {
         return handleInternalServerError(res, error);
     }
