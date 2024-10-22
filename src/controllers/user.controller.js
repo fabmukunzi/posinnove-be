@@ -350,8 +350,14 @@ export const forgetPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
-    const token = req.params;
+    const {token}= req.params;
 
+    if (!token) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Invalid or expired token'
+      });
+    }
     // Verify token and decode it
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
@@ -365,8 +371,10 @@ export const resetPassword = async (req, res) => {
     });
 
     const userId = decodedToken.id;
-
-    // Find the user by the decoded ID
+    if (!userId) {
+      return res.status(400).json({ message: 'Invalid token' });
+    }
+  
     const user = await UserService.getUserById(userId);
     if (!user) {
       return res.status(404).json({
@@ -383,16 +391,46 @@ export const resetPassword = async (req, res) => {
         message: 'Password is required'
       });
     }
-
-    // Hash the new password and update user record
     const hashedPassword = await hashPassword(password);
     user.password = hashedPassword;
     await user.save();
+
+    await sendEmail({
+      to: user.email,
+      subject: 'Posinnove Password Updated Successfully',
+      body: `
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h2>Hello ${user.firstName},</h2>
+              <p>We wanted to inform you that the password associated with your Posinnove account has been successfully updated.</p>
+              <p>If you did not make this change, please contact our support team immediately.</p>
+              <p>Thank you,<br/>The Posinnove Team</p>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+    
+    
 
     return res.status(200).json({
       status: 'success',
       message: 'Password reset successfully'
     });
+
   } catch (error) {
     console.error(error);
     return res.status(500).json({
