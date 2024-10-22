@@ -1,7 +1,9 @@
 // import Expertise from "./expertise.model";
 
 export default function associateModels(models) {
-  const { User, projectCategory, Project, Enrollment, Interest, Expertise, Task, enrollmentTask, Feedback, Review } = models;
+  const { User, projectCategory, Project, Enrollment, Interest, Expertise, Task, enrollmentTask, Feedback, Review,
+    ChatRoom, ChatParticipant, Channel, ChannelParticipant, Message, BlockLog
+   } = models;
 
   // User associations
   User.hasMany(Project, { foreignKey: 'author', as: 'authoredProjects' });
@@ -55,4 +57,48 @@ export default function associateModels(models) {
 
   Project.hasMany(Review, { foreignKey: 'projectId', as: 'reviews' });
   Review.belongsTo(Project, { foreignKey: 'projectId', as: 'project' });
+
+  // Chat associations
+  ChatRoom.hasMany(Channel, { foreignKey: 'chatRoomId', as: 'channels' });
+  Channel.belongsTo(ChatRoom, { foreignKey: 'chatRoomId', as: 'chatRoom' });
+
+  ChatRoom.hasMany(ChatParticipant, { foreignKey: 'chatRoomId', as: 'participants' });
+  ChatParticipant.belongsTo(ChatRoom, { foreignKey: 'chatRoomId', as: 'chatRoom' });
+
+  ChatRoom.hasMany(Message, { foreignKey: 'chatRoomId', as: 'messages' });
+  Message.belongsTo(ChatRoom, { foreignKey: 'chatRoomId', as: 'chatRoom' });
+
+  ChatRoom.belongsTo(Project, { foreignKey: 'projectId', as: 'project' });
+  Project.hasOne(ChatRoom, { foreignKey: 'projectId', as: 'chatRoom' });
+
+  ChatRoom.belongsToMany(User, { through: ChatParticipant, foreignKey: 'chatRoomId', as: 'users' });
+  User.belongsToMany(ChatRoom, { through: ChatParticipant, foreignKey: 'userId', as: 'chatRooms' });
+
+  ChatRoom.belongsTo(User, { foreignKey: 'creatorId', as: 'creator' });
+  User.hasMany(ChatRoom, { foreignKey: 'creatorId', as: 'createdChatRooms' });
+
+  ChatParticipant.hasMany(ChannelParticipant, { foreignKey: 'chatParticipantId', as: 'channelParticipants' });
+  ChannelParticipant.belongsTo(ChatParticipant, { foreignKey: 'chatParticipantId', as: 'chatParticipant' });
+
+  Channel.hasMany(ChannelParticipant, { foreignKey: 'channelId', as: 'participants' });
+  ChannelParticipant.belongsTo(Channel, { foreignKey: 'channelId', as: 'channel' });
+
+  Channel.hasMany(Message, { foreignKey: 'channelId', as: 'messages' });
+  Message.belongsTo(Channel, { foreignKey: 'channelId', as: 'channel' });
+
+  Message.belongsTo(ChatParticipant, { foreignKey: 'senderId', as: 'sender' });
+  ChatParticipant.hasMany(Message, { foreignKey: 'senderId', as: 'messages' });
+
+  Message.hasMany(Message, { foreignKey: 'parentMessageId', as: 'replies' });
+  Message.belongsTo(Message, { foreignKey: 'parentMessageId', as: 'parentMessage' });
+
+  // ----BlockLog associations
+  ChatParticipant.hasMany(BlockLog, { foreignKey: 'blockedParticipantId', as: 'blocksReceived' });
+  BlockLog.belongsTo(ChatParticipant, { foreignKey: 'blockedParticipantId', as: 'blockedParticipant' });
+
+  ChatParticipant.hasMany(BlockLog, { foreignKey: 'blockedByParticipantId', as: 'blocksInitiated' });
+  BlockLog.belongsTo(ChatParticipant, { foreignKey: 'blockedByParticipantId', as: 'blockedBy' });
+
+  Channel.hasMany(BlockLog, { foreignKey: 'channelId', as: 'blockLogs' });
+  BlockLog.belongsTo(Channel, { foreignKey: 'channelId', as: 'channel' });
 }
