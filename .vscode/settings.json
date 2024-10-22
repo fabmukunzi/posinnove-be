@@ -4,7 +4,7 @@
   "[javascript]": {
     "editor.defaultFormatter": null
   },
-  "javascript.validate.enable": false, //disable all built-in syntax checking
+  "javascript.validate.enable": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.fixAll.tslint": "explicit",

@@ -1,19 +1,18 @@
+import cors from 'cors'
+import dotenv from 'dotenv'
 import express from 'express'
 import session from 'express-session'
-import passport from './thirdParties/passport.google.js'
-import userRoutes from './routes/user.routes'
-import projectRoutes from './routes/project.routes'
-import InterestRoutes from './routes/interest.routes.js'
-import projectCategoryRoutes from './routes/projectCategory.routes'
-import docs from './documentation'
-import swaggerUi from 'swagger-ui-express'
-import cors from 'cors'
 import morgan from 'morgan'
-import dotenv from 'dotenv'
-import subscribeRoutes from './routes/subscribe.routes.js'
+import swaggerUi from 'swagger-ui-express'
+import docs from './documentation'
+import expertiseAndInterestsRoutes from './routes/defaultTable.routes'
 import ExpertiseRoutes from './routes/expertise.routes.js'
-
-import models from './database/models'
+import InterestRoutes from './routes/interest.routes.js'
+import projectRoutes from './routes/project.routes'
+import projectCategoryRoutes from './routes/projectCategory.routes'
+import subscribeRoutes from './routes/subscribe.routes.js'
+import userRoutes from './routes/user.routes'
+import passport from './thirdParties/passport.google.js'
 
 dotenv.config()
 const app = express()
@@ -57,6 +56,7 @@ app.use('/api/projects', projectRoutes)
 app.use('/api/subscribe', subscribeRoutes)
 app.use('/api/interests', InterestRoutes)
 app.use('/api/expertises', ExpertiseRoutes)
+app.use('/api/expertiseAndInterests', expertiseAndInterestsRoutes)
 
 // Google OAuth routes
 app.get(
