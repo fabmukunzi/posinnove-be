@@ -1,34 +1,35 @@
-import express from 'express';
-import session from 'express-session';
-import passport from './thirdParties/passport.google.js';  
-import userRoutes from './routes/user.routes';
-import projectRoutes from './routes/project.routes';
+import cors from 'cors'
+import dotenv from 'dotenv'
+import express from 'express'
+import session from 'express-session'
+import morgan from 'morgan'
+import swaggerUi from 'swagger-ui-express'
+import docs from './documentation'
+import expertiseAndInterestsRoutes from './routes/defaultTable.routes'
+import ExpertiseRoutes from './routes/expertise.routes.js'
 import InterestRoutes from './routes/interest.routes.js'
-import projectCategoryRoutes from './routes/projectCategory.routes';
-import docs from './documentation';
-import swaggerUi from 'swagger-ui-express';
-import cors from 'cors';
-import morgan from 'morgan';
-import dotenv from 'dotenv';
-import subscribeRoutes from './routes/subscribe.routes.js';
-import ExpertiseRoutes from './routes/expertise.routes.js';
+import projectRoutes from './routes/project.routes'
+import projectCategoryRoutes from './routes/projectCategory.routes'
+import subscribeRoutes from './routes/subscribe.routes.js'
+import userRoutes from './routes/user.routes'
+import passport from './thirdParties/passport.google.js'
 
-import models from './database/models';
+dotenv.config()
+const app = express()
 
-dotenv.config();
-const app = express();
-
-app.use(session({
+app.use(
+  session({
     secret: process.env.APISECRET,
     resave: false,
-    saveUninitialized: true
-}));
+    saveUninitialized: true,
+  })
+)
 
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize())
+app.use(passport.session())
 
 const CSS_URL =
-  'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css';
+  'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css'
 
 // const models = { User, projectCategory, Project, Enrollment, Interest, Expertise, Task, enrollmentTask };
 // associateModels(models);
@@ -50,36 +51,38 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
-    return res.status(200).json({ message: 'Welcome to Posinnove Backend APIs' });
-});
+  return res.status(200).json({ message: 'Welcome to Posinnove Backend APIs' })
+})
 
-app.use('/api/users', userRoutes);
-app.use('/api/categories', projectCategoryRoutes);
-app.use("/api/projects",projectRoutes)
-app.use('/api/subscribe',subscribeRoutes)
-app.use('/api/interests',InterestRoutes);
-app.use('/api/expertises',ExpertiseRoutes);
+app.use('/api/users', userRoutes)
+app.use('/api/categories', projectCategoryRoutes)
+app.use('/api/projects', projectRoutes)
+app.use('/api/subscribe', subscribeRoutes)
+app.use('/api/interests', InterestRoutes)
+app.use('/api/expertises', ExpertiseRoutes)
+app.use('/api/expertiseAndInterests', expertiseAndInterestsRoutes)
 
 // Google OAuth routes
-app.get('/auth/google',
+app.get(
+  '/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
-);
+)
 
-app.get('/auth/google/callback', 
+app.get(
+  '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-
-    res.redirect('/profile');
+    res.redirect('/profile')
   }
-);
+)
 
 // Profile route (for demonstration purposes)
 app.get('/profile', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.json({ user: req.user });
-    } else {
-        res.redirect('/');
-    }
-});
+  if (req.isAuthenticated()) {
+    res.json({ user: req.user })
+  } else {
+    res.redirect('/')
+  }
+})
 
-export default app;
+export default app
