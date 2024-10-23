@@ -304,47 +304,48 @@ export const forgetPassword = async (req, res) => {
         message: 'User not found',
       })
     }
-    const resetToken = generateToken(user, '10min')
-    sendEmail({
+    const resetToken = generateToken(user, '2h');
+    await sendEmail({
       to: email,
       subject: 'Posinnove ResetPassword',
       body: `
         <html>
-          <head>
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-              }
-              .container {
-                max-width: 600px;
-                margin: 0 auto;
-                padding: 20px;
-              }
-              .reset-link {
-                color: #007bff;
-                text-decoration: none;
-              }
-              .reset-link:hover {
-                text-decoration: underline;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <h2>Reset Your Posinnove Account Password</h2>
-              <p>We received a request to reset the password associated with this email address. If you made this request, please click the link below to reset your password:</p>
-              <p><a class="reset-link" href="${process.env.FRONT_END_URL}/resetPassword/${resetToken}">Reset Your Password</a></p>
-              <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
-              <p>Thank you,<br/>The Posinnove Team</p>
-            </div>
-          </body>
-        </html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .reset-link {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .reset-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Reset Your Posinnove Account Password</h2>
+      <p>We received a request to reset the password associated with this email address. If you made this request, please click the link below to reset your password:</p>
+      <p><a class="reset-link" href="${process.env.baseURL}/resetPassword/${resetToken}">Reset Your Password</a></p>
+      <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
+      <p>Thank you,<br/>The Posinnove Team</p>
+    </div>
+  </body>
+</html>
+
       `,
     })
     res.status(200).json({
       status: 'success',
-      message: ' sent successfully',
-    })
+      message: 'Verification email sent successfully',
+    });
   } catch (error) {
     res.status(500).json({
       status: 'error',
@@ -355,8 +356,14 @@ export const forgetPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
-    const token = req.params.token
+    const {token}= req.params;
 
+    if (!token) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Invalid or expired token'
+      });
+    }
     // Verify token and decode it
     const decodedToken = jwt.verify(
       token,
@@ -373,10 +380,12 @@ export const resetPassword = async (req, res) => {
       },
     )
 
-    const userId = decodedToken.id
-
-    // Find the user by the decoded ID
-    const user = await UserService.getUserById(userId)
+    const userId = decodedToken.id;
+    if (!userId) {
+      return res.status(400).json({ message: 'Invalid token' });
+    }
+  
+    const user = await UserService.getUserById(userId);
     if (!user) {
       return res.status(404).json({
         status: 'fail',
@@ -392,16 +401,46 @@ export const resetPassword = async (req, res) => {
         message: 'Password is required',
       })
     }
+    const hashedPassword = await hashPassword(password);
+    user.password = hashedPassword;
+    await user.save();
 
-    // Hash the new password and update user record
-    const hashedPassword = await hashPassword(password)
-    user.password = hashedPassword
-    await user.save()
+    await sendEmail({
+      to: user.email,
+      subject: 'Posinnove Password Updated Successfully',
+      body: `
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h2>Hello ${user.firstName},</h2>
+              <p>We wanted to inform you that the password associated with your Posinnove account has been successfully updated.</p>
+              <p>If you did not make this change, please contact our support team immediately.</p>
+              <p>Thank you,<br/>The Posinnove Team</p>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+    
+    
 
     return res.status(200).json({
       status: 'success',
-      message: 'Password reset successfully',
-    })
+      message: 'Password reset successfully'
+    });
+
   } catch (error) {
     console.error(error)
     return res.status(500).json({

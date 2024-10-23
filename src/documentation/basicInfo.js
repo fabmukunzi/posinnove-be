@@ -10,7 +10,7 @@ const basicInfo = {
     },
     servers: [
       {
-        url: "http://localhost:5000",
+        url: "http://localhost:7000",
         description: "Development server"
       },
       {

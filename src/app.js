@@ -41,10 +41,14 @@ app.use(
       '.swagger-ui .opblock .opblock-summary-path-description-wrapper { align-items: center; display: flex; flex-wrap: wrap; gap: 0 10px; padding: 0 10px; width: 100%; }',
     customCssUrl: CSS_URL,
   })
-)
-app.use(cors())
-app.use(express.json())
-app.use(morgan('dev'))
+);
+const corsOptions = {
+  origin: '*', 
+  optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
   return res.status(200).json({ message: 'Welcome to Posinnove Backend APIs' })
